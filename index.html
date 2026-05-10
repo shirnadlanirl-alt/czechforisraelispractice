@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Czech Academy | מפת קורס</title>
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root { --green: #23C18A; --green-dark:#1da374; --dark: #1F2D29; --bg: #F0F4F3; --locked: #ccc; --gold: #f1c40f; --card:#ffffff; --border:#dfe8e5; --muted:#6f827c; }
+        
+        body { font-family: 'Heebo', sans-serif; background-color: var(--bg); margin: 0; display: flex; flex-direction: column; align-items: center; color:var(--dark); }
+        .page-shell{width:100%;max-width:980px;padding:0 16px 40px;}
+        .dashboard{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:18px 0;}
+        .stat-card,.nav-card{background:var(--card);border:1px solid var(--border);border-radius:22px;padding:16px;box-shadow:0 6px 18px rgba(0,0,0,.04);}
+        .stat-number{font-size:30px;font-weight:900;} .stat-label{color:var(--muted);font-size:14px;}
+        .nav-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:12px 0 24px;}
+        .nav-card{text-decoration:none;color:var(--dark);font-weight:800;display:flex;flex-direction:column;gap:8px;min-height:110px;justify-content:center;}
+        .nav-card small{color:var(--muted);font-weight:700;}
+        .continue-card{background:linear-gradient(135deg,#ffffff,#ecfaf4);border:1px solid var(--border);border-radius:26px;padding:18px;margin:18px 0;display:flex;justify-content:space-between;gap:16px;align-items:center;flex-wrap:wrap;}
+        .continue-btn{display:inline-flex;text-decoration:none;background:var(--green);color:white;padding:14px 18px;border-radius:16px;font-weight:900;box-shadow:0 6px 0 var(--green-dark);}
+        @media (max-width:700px){.nav-grid{grid-template-columns:repeat(2,minmax(0,1fr));}.page-shell{padding:0 12px 32px;}}
+        
+        .header { background: white; width: 100%; padding: 20px; text-align: center; box-shadow: 0 2px 10px rgba(0,0,0,0.05); position: sticky; top: 0; z-index: 100; }
+        .header h1 { margin: 0; color: var(--dark); font-weight: 900; }
+        
+        .map-container { position: relative; width: 100%; max-width: 500px; height: 2200px; padding: 50px 0; }
+        
+        /* עיצוב בסיסי לעיגול שיעור */
+        .lesson-node {
+            position: absolute; width: 80px; height: 80px;
+            background: white; border: 4px solid #e5e5e5; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 30px; cursor: default; transition: 0.3s;
+            box-shadow: 0 6px 0 #e5e5e5; z-index: 2; text-decoration: none; color: var(--locked);
+            pointer-events: none;
+        }
+
+        /* שיעור פתוח ללמידה */
+        .lesson-node.unlocked { 
+            cursor: pointer; 
+            pointer-events: auto; 
+            border-color: var(--green); 
+            color: var(--green); 
+            box-shadow: 0 6px 0 var(--green); 
+        }
+
+        /* שיעור שהושלם - הופך לירוק עם V מוזהב */
+        .lesson-node.completed { 
+            background: var(--green); 
+            color: white; 
+            border-color: #1da374; 
+            box-shadow: 0 6px 0 #1da374; 
+        }
+
+        /* הוספת ה-V המוזהב מעל השיעור שהושלם */
+        .lesson-node.completed::after {
+            content: '✔';
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: var(--gold);
+            color: white;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: bold;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        
+        .lesson-label {
+            position: absolute; width: 150px; text-align: center;
+            font-weight: 700; font-size: 16 Hebrew; color: var(--dark);
+            top: 90px; left: 50%; transform: translateX(-50%); 
+            background: white; padding: 5px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        /* מיקומי הנחש */
+        .l1 { top: 50px; left: 50%; transform: translateX(-50%); }
+        .l2 { top: 200px; left: 20%; }
+        .l3 { top: 350px; left: 70%; }
+        .l4 { top: 500px; left: 50%; transform: translateX(-50%); }
+        .l5 { top: 650px; left: 20%; }
+        .l6 { top: 800px; left: 70%; }
+        .l7 { top: 950px; left: 50%; transform: translateX(-50%); }
+        .l8 { top: 1100px; left: 20%; }
+        .l9 { top: 1250px; left: 70%; }
+        .l10 { top: 1400px; left: 50%; transform: translateX(-50%); }
+        .l11 { top: 1550px; left: 20%; }
+        .l12 { top: 1700px; left: 70%; }
+
+        svg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; }
+        line { stroke: #e5e5e5; stroke-width: 8; stroke-linecap: round; }
+        line.active { stroke: var(--green); }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <h1>🇨🇿 ללמוד צ'כית — בעברית</h1>
+    <a href="https://www.czechforisraelis.cz" style="text-decoration:none; color:var(--green); font-weight:bold;">צ'כית<span>IL</span></a>
+</div>
+
+<div class="page-shell">
+<div class="continue-card">
+  <div>
+    <div style="font-size:28px;font-weight:900;">המשך למידה</div>
+    <div id="continue-text" style="color:var(--muted);margin-top:6px;">התחילי מהשיעור הזמין הבא או חזרי למסכי המעטפת.</div>
+  </div>
+  <a id="continue-link" class="continue-btn" href="practice.html?lesson=lesson-1">התחל עכשיו</a>
+</div>
+<div class="dashboard" id="overview-cards"></div>
+<div class="nav-grid">
+  <a class="nav-card" href="review.html">🔁 חזרות<small>Review queue ופריטים חלשים</small></a>
+  <a class="nav-card" href="hard-words.html">🧠 מילים קשות<small>מילים ומשפטים שדורשים חיזוק</small></a>
+  <a class="nav-card" href="achievements.html">🏅 הישגים<small>גיימיפיקציה ורצפים</small></a>
+  <a class="nav-card" href="stats.html">📊 סטטיסטיקה אישית<small>דיוק, שיעורים וחולשות</small></a>
+</div>
+<div class="map-container">
+    <svg id="map-lines"></svg>
+    <a id="node-1" data-lesson-id="lesson-1" href="practice.html?lesson=lesson-1" class="lesson-node l1"><span>1</span><div class="lesson-label">ברכות ובסיס</div></a>
+    <a id="node-2" data-lesson-id="lesson-2" href="practice.html?lesson=lesson-2" class="lesson-node l2"><span>2</span><div class="lesson-label">היכרות</div></a>
+    <a id="node-3" data-lesson-id="lesson-3" href="practice.html?lesson=lesson-3" class="lesson-node l3"><span>3</span><div class="lesson-label">הפועל להיות</div></a>
+    <a id="node-4" data-lesson-id="lesson-4" href="practice.html?lesson=lesson-4" class="lesson-node l4"><span>4</span><div class="lesson-label">מספרים וגיל</div></a>
+    <a id="node-5" data-lesson-id="lesson-5" href="practice.html?lesson=lesson-5" class="lesson-node l5"><span>5</span><div class="lesson-label">אוכל וקניות</div></a>
+    <a id="node-6" data-lesson-id="lesson-6" href="practice.html?lesson=lesson-6" class="lesson-node l6"><span>6</span><div class="lesson-label">התמצאות בעיר</div></a>
+    <a id="node-7" data-lesson-id="lesson-7" href="practice.html?lesson=lesson-7" class="lesson-node l7"><span>7</span><div class="lesson-label">משפחה</div></a>
+    <a id="node-8" data-lesson-id="lesson-8" href="practice.html?lesson=lesson-8" class="lesson-node l8"><span>8</span><div class="lesson-label">זמן ומזג אוויר</div></a>
+    <a id="node-9" data-lesson-id="lesson-9" href="practice.html?lesson=lesson-9" class="lesson-node l9"><span>9</span><div class="lesson-label">פעלים נפוצים</div></a>
+    <a id="node-10" data-lesson-id="lesson-10" href="practice.html?lesson=lesson-10" class="lesson-node l10"><span>10</span><div class="lesson-label">עבודה וקריירה</div></a>
+    <a id="node-11" data-lesson-id="lesson-11" href="practice.html?lesson=lesson-11" class="lesson-node l11"><span>11</span><div class="lesson-label">בבית ובדירה</div></a>
+    <a id="node-12" data-lesson-id="lesson-12" href="practice.html?lesson=lesson-12" class="lesson-node l12"><span>12</span><div class="lesson-label">פנאי ותחביבים</div></a>
+</div>
+</div>
+
+<script src="app-state.js"></script>
+<script>
+    function updateProgress() {
+        const overview = window.CzechAppState ? window.CzechAppState.getOverview() : null;
+        if (overview) {
+            document.getElementById('overview-cards').innerHTML = `
+                <div class="stat-card"><div class="stat-number">${overview.completedLessons}</div><div class="stat-label">שיעורים שהושלמו</div></div>
+                <div class="stat-card"><div class="stat-number">${overview.accuracy}%</div><div class="stat-label">דיוק כללי</div></div>
+                <div class="stat-card"><div class="stat-number">${overview.reviewCount}</div><div class="stat-label">פריטים לחזרה</div></div>
+                <div class="stat-card"><div class="stat-number">${overview.dailyStreak}</div><div class="stat-label">ימי רצף</div></div>`;
+            const nextLesson = overview.lastPlayedLesson || 'lesson-1';
+            document.getElementById('continue-link').href = `practice.html?lesson=${nextLesson}`;
+            document.getElementById('continue-text').innerText = overview.lastPlayedLesson ? `השיעור האחרון שלך היה ${overview.lastPlayedLesson}. אפשר להמשיך משם או לקפוץ למסכי החזרות והסטטיסטיקה.` : 'עדיין אין היסטוריית תרגול. התחילי משיעור 1 או בחרי מסך מעטפת.';
+        }
+        const totalLessons = 12;
+        let lastCompleted = 0;
+
+        // עוברים על כל השיעורים
+        for (let i = 1; i <= totalLessons; i++) {
+            const lessonId = 'lesson-' + i;
+            const node = document.getElementById('node-' + i);
+            const isCompleted = localStorage.getItem(lessonId + '_completed') === 'true';
+
+            if (isCompleted) {
+                node.classList.add('completed', 'unlocked');
+                lastCompleted = i;
+            } else if (i === lastCompleted + 1 || i === 1) {
+                // השיעור הראשון תמיד פתוח, או השיעור שאחרי האחרון שבוצע
+                node.classList.add('unlocked');
+            }
+        }
+        // מציירים את הקווים רק אחרי שעידכנו את הסטטוס של העיגולים
+        setTimeout(drawLines, 100); 
+    }
+
+    function drawLines() {
+        const svg = document.getElementById('map-lines');
+        const nodes = document.querySelectorAll('.lesson-node');
+        let html = '';
+        const container = document.querySelector('.map-container').getBoundingClientRect();
+
+        for (let i = 0; i < nodes.length - 1; i++) {
+            const n1 = nodes[i].getBoundingClientRect();
+            const n2 = nodes[i+1].getBoundingClientRect();
+            
+            const x1 = n1.left + n1.width/2 - container.left;
+            const y1 = n1.top + n1.height/2 - container.top;
+            const x2 = n2.left + n2.width/2 - container.left;
+            const y2 = n2.top + n2.height/2 - container.top;
+            
+            // קו ירוק ("פעיל") רק אם השיעור הבא כבר פתוח או הושלם
+            const isActive = nodes[i+1].classList.contains('unlocked') ? 'class="active"' : '';
+            html += `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" ${isActive} />`;
+        }
+        svg.innerHTML = html;
+    }
+
+    // הפעלה בטעינה ובשינוי גודל מסך
+    window.addEventListener('load', updateProgress);
+    window.addEventListener('resize', drawLines);
+</script>
+
+</body>
+</html>

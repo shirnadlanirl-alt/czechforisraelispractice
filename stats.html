@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>סטטיסטיקה אישית | Czech Academy</title>
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root{--green:#23C18A;--dark:#1F2D29;--bg:#F0F4F3;--muted:#72837d;--card:#fff;--border:#dde6e2;--red:#ff6b6b}
+    *{box-sizing:border-box} body{margin:0;font-family:'Heebo',sans-serif;background:var(--bg);color:var(--dark)} .wrap{max-width:1000px;margin:auto;padding:20px}
+    .top{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}.back{background:#fff;color:var(--dark);text-decoration:none;padding:14px 18px;border-radius:16px;font-weight:800}
+    .hero{background:#fff;border:1px solid var(--border);border-radius:24px;padding:24px;margin:18px 0}.hero h1{margin:0 0 8px;font-size:34px}.hero p{margin:0;color:var(--muted)}
+    .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px}.card{background:#fff;border:1px solid var(--border);border-radius:22px;padding:18px}.num{font-size:34px;font-weight:900}.label{color:var(--muted);font-size:14px}
+    .two{display:grid;grid-template-columns:1.1fr .9fr;gap:14px;margin-top:14px}.panel{background:#fff;border:1px solid var(--border);border-radius:22px;padding:18px}.panel h2{margin:0 0 14px;font-size:24px}.row{display:flex;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px solid #eef3f1}.row:last-child{border-bottom:none}.bar{height:12px;background:#ecf2f0;border-radius:999px;overflow:hidden;margin-top:8px}.fill{height:100%;background:var(--green)} .bad{background:var(--red)}
+    @media (max-width:760px){.two{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="top"><a class="back" href="index.html">חזרה לבית</a></div>
+    <section class="hero">
+      <h1>סטטיסטיקה אישית</h1>
+      <p>הדף הזה מרכז תמונת מצב אמיתית: כמה למדת, באילו שיעורים אתה חזק, ואיפה עדיין צריך חיזוק.</p>
+    </section>
+    <section class="cards" id="cards"></section>
+    <section class="two">
+      <div class="panel">
+        <h2>ביצועים לפי שיעור</h2>
+        <div id="lesson-stats"></div>
+      </div>
+      <div class="panel">
+        <h2>אזורי חולשה</h2>
+        <div id="weaknesses"></div>
+      </div>
+    </section>
+  </div>
+  <script src="app-state.js"></script>
+  <script>
+    const overview = window.CzechAppState.getOverview();
+    const state = overview.state;
+    document.getElementById('cards').innerHTML = `
+      <div class="card"><div class="num">${overview.completedLessons}</div><div class="label">שיעורים שהושלמו</div></div>
+      <div class="card"><div class="num">${overview.totalAnswers}</div><div class="label">תשובות סה"כ</div></div>
+      <div class="card"><div class="num">${overview.accuracy}%</div><div class="label">דיוק כללי</div></div>
+      <div class="card"><div class="num">${overview.dailyStreak}</div><div class="label">ימי רצף</div></div>
+      <div class="card"><div class="num">${overview.totalXp}</div><div class="label">XP</div></div>
+      <div class="card"><div class="num">${overview.hardWordsCount}</div><div class="label">מילים קשות</div></div>
+    `;
+
+    const lessonStats = Object.entries(state.lessonStats || {});
+    document.getElementById('lesson-stats').innerHTML = lessonStats.length ? lessonStats.map(([lessonId, stat]) => `
+      <div class="row">
+        <div>
+          <div style="font-weight:900">${lessonId}</div>
+          <div class="label">${stat.attempts} ניסיונות · ${stat.correct} נכון · ${stat.wrong} לא נכון</div>
+          <div class="bar"><div class="fill" style="width:${stat.bestAccuracy || 0}%"></div></div>
+        </div>
+        <div style="font-weight:900">${stat.bestAccuracy || 0}%</div>
+      </div>
+    `).join('') : '<div class="label">עדיין אין מספיק נתונים לשיעורים.</div>';
+
+    const weak = window.CzechAppState.getReviewQueue(8);
+    document.getElementById('weaknesses').innerHTML = weak.length ? weak.map(item => {
+      const total = item.correct + item.wrong;
+      const accuracy = total ? Math.round(item.correct / total * 100) : 0;
+      return `
+        <div class="row">
+          <div>
+            <div style="font-weight:900">${item.prompt}</div>
+            <div class="label">${item.lessonId} · ${item.type}</div>
+            <div class="bar"><div class="fill bad" style="width:${Math.max(8, 100 - accuracy)}%"></div></div>
+          </div>
+          <div style="font-weight:900">${accuracy}%</div>
+        </div>
+      `;
+    }).join('') : '<div class="label">עדיין אין אזורי חולשה מזוהים.</div>';
+  </script>
+</body>
+</html>

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>מילים קשות | Czech Academy</title>
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root{--green:#23C18A;--dark:#1F2D29;--bg:#F0F4F3;--muted:#6f827c;--card:#fff;--border:#dde6e2;--gold:#f1c40f}
+    *{box-sizing:border-box} body{margin:0;font-family:'Heebo',sans-serif;background:var(--bg);color:var(--dark)}
+    .wrap{max-width:960px;margin:auto;padding:20px}.top{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}.back,.play{padding:14px 18px;border-radius:16px;font-weight:800;text-decoration:none}.back{background:#fff;color:var(--dark)}.play{background:var(--green);color:#fff;box-shadow:0 6px 0 #1da374}
+    .hero,.card{background:#fff;border-radius:24px;border:1px solid var(--border)}.hero{padding:24px;margin:18px 0}.hero h1{margin:0 0 8px;font-size:34px}.hero p{margin:0;color:var(--muted)}
+    .grid{display:grid;gap:14px}.word{padding:18px;display:flex;justify-content:space-between;gap:14px;align-items:center}.word-main{font-size:26px;font-weight:900}.sub{color:var(--muted);margin-top:6px}.chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.chip{background:#f5f8f7;color:var(--muted);border-radius:999px;padding:6px 10px;font-size:13px;font-weight:700}.warn{background:#fff7e4;color:#a56a00}.empty{padding:32px;text-align:center;color:var(--muted)}
+    @media (max-width:640px){.word{flex-direction:column;align-items:flex-start}.back,.play{width:100%;text-align:center}}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="top">
+      <a class="back" href="index.html">חזרה לבית</a>
+      <a class="play" href="practice.html?mode=hard-words">תרגל מילים קשות</a>
+    </div>
+    <section class="hero">
+      <h1>מילים קשות</h1>
+      <p>אוסף אישי של מילים, משפטים ופריטים שבהם המשתמש מתקשה יותר מהרגיל.</p>
+    </section>
+    <section id="list" class="grid"></section>
+  </div>
+
+  <script src="app-state.js"></script>
+  <script>
+    const items = window.CzechAppState.getHardWords(100);
+    const list = document.getElementById('list');
+    if(!items.length){
+      list.innerHTML = '<div class="hero empty">עדיין אין מילים קשות. אחרי כמה סשנים של תרגול, הרשימה תתחיל להתמלא אוטומטית.</div>';
+    } else {
+      list.innerHTML = items.map(item => {
+        const total = item.correct + item.wrong;
+        const accuracy = total ? Math.round(item.correct / total * 100) : 0;
+        return `
+          <article class="card word">
+            <div>
+              <div class="word-main">${item.word || item.prompt}</div>
+              <div class="sub">${item.translation || 'ללא תרגום זמין'} · ${item.lessonId}</div>
+              <div class="chips">
+                <span class="chip warn">${item.wrong} טעויות</span>
+                <span class="chip">${item.correct} תשובות נכונות</span>
+                <span class="chip">${accuracy}% הצלחה</span>
+                <span class="chip">${item.type}</span>
+              </div>
+            </div>
+            <a class="play" href="practice.html?lesson=${item.lessonId}&mode=review">חזור לתרגול</a>
+          </article>
+        `;
+      }).join('');
+    }
+  </script>
+</body>
+</html>

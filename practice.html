@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>תרגול | Czech Academy</title>
+    <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+    @keyframes popIn {
+    0% { transform: scale(0.5); opacity: 0; }
+    70% { transform: scale(1.1); }
+    100% { transform: scale(1); opacity: 1; }
+}
+/* פתרון חכם שמזהה את כיוון השפה באופן אוטומטי */
+.option-btn, .question-text {
+    direction: auto !important;
+    unicode-bidi: plaintext !important;
+    text-align: center;
+}
+
+/* מוודא שהטקסט בתוך הכפתורים לא נצמד לצדדים */
+.option-btn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 15px;
+}
+        :root { --green: #23C18A; --red: #ff4b4b; --bg: #F0F4F3; --dark: #1F2D29; }
+        body { font-family: 'Assistant', sans-serif; background: var(--bg); margin: 0; display: flex; flex-direction: column; height: 100vh; overflow: hidden; transition: background 0.3s; }
+        
+        /* התקדמות */
+        .progress-container { padding: 20px; background: #fff; border-bottom: 2px solid #e5e5e5; z-index: 1000; }
+        .progress-bar { height: 14px; background: #e5e5e5; border-radius: 20px; width: 100%; max-width: 500px; margin: 0 auto; overflow: hidden; }
+        .progress-fill { height: 100%; background: var(--green); width: 0%; transition: width 0.4s ease; }
+        
+        /* תוכן מרכזי */
+        .content { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; padding-bottom: 120px; width: 100%; box-sizing: border-box; }
+        .question-text { font-size: 28px; font-weight: 700; margin-bottom: 30px; text-align: center; color: var(--dark); line-height: 1.4; max-width: 600px; transition: all 0.3s; }
+        .highlight { color: var(--green); border-bottom: 3px solid var(--green); padding: 0 5px; }
+        
+        /* אפקט אתגר קשה */
+        .hard-mode .question-text { color: #f39c12; animation: shake 0.5s ease-in-out; }
+        .hard-badge { background: #f39c12; color: white; padding: 4px 12px; border-radius: 20px; font-size: 14px; font-weight: 800; margin-bottom: 10px; display: inline-block; animation: popIn 0.3s ease; }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        /* כפתורי אפשרויות */
+        .options-grid { display: grid; gap: 15px; width: 100%; max-width: 400px; }
+        .option-btn { background: #fff; border: 2px solid #e5e5e5; border-radius: 15px; padding: 18px; font-size: 18px; font-weight: 700; cursor: pointer; box-shadow: 0 4px 0 #e5e5e5; font-family: 'Assistant'; transition: all 0.1s; position: relative; }
+        .option-btn:active { transform: translateY(2px); box-shadow: 0 2px 0 #e5e5e5; }
+        .option-btn.hidden { visibility: hidden; opacity: 0; pointer-events: none; }
+        
+        /* תיבת סידור המילים */
+        .word-slots { display: flex; gap: 12px; margin-bottom: 30px; min-height: 65px; border-bottom: 2px dashed #ccc; padding: 10px; flex-wrap: wrap; justify-content: center; width: 100%; max-width: 500px; direction: ltr; }
+        .word-chip { background: #fff; border: 2px solid var(--green); border-radius: 12px; padding: 10px 18px; font-weight: 700; font-size: 18px; box-shadow: 0 3px 0 var(--green); cursor: pointer; animation: popIn 0.2s ease; }
+        
+        @keyframes popIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+        /* פס משוב */
+        .feedback-bar { position: fixed; bottom: 0; left: 0; right: 0; padding: 25px; transform: translateY(100%); transition: 0.3s cubic-bezier(0.18, 0.89, 0.32, 1.28); z-index: 2000; display: flex; justify-content: center; }
+        .feedback-bar.show { transform: translateY(0); }
+        .feedback-bar.correct { background: #d7ffb8; color: #438e00; }
+        .feedback-bar.wrong { background: #ffdfe0; color: #ee5253; }
+        .feedback-content { width: 100%; max-width: 600px; display: flex; justify-content: space-between; align-items: center; }
+        
+        .continue-btn { padding: 15px 45px; border-radius: 15px; font-weight: 900; font-size: 20px; cursor: pointer; border: none; color: white; box-shadow: 0 4px 0 rgba(0,0,0,0.2); font-family: 'Assistant'; }
+        .correct .continue-btn { background: #58a700; }
+        .wrong .continue-btn { background: #ea2b2b; }
+        
+        .audio-btn { font-size: 50px; background: var(--green); color: white; border: none; border-radius: 20px; padding: 15px 25px; cursor: pointer; margin-bottom: 20px; box-shadow: 0 5px 0 #1da374; transition: 0.1s; }
+        
+        .close-btn { position: absolute; top: 20px; right: 20px; font-size: 24px; text-decoration: none; color: #ccc; font-weight: bold; z-index: 3000; }
+    </style>
+    <script src="app-state.js"></script>
+</head>
+<body>
+
+<a href="index.html" class="close-btn">✕</a>
+<div class="progress-container">
+    <div class="progress-bar"><div class="progress-fill" id="progress"></div></div>
+</div>
+<div class="content">
+    <div id="question-area" style="width:100%; display:flex; flex-direction:column; align-items:center;"></div>
+    <div id="word-order-area" class="word-slots" style="display:none;"></div>
+    <div class="options-grid" id="options"></div>
+</div>
+<div id="feedback" class="feedback-bar">
+    <div class="feedback-content">
+        <div class="feedback-text">
+            <b id="feedback-status" style="display:block; font-size:22px;"></b>
+            <span id="feedback-note"></span>
+        </div>
+        <button class="continue-btn" onclick="handleContinue()">המשך</button>
+    </div>
+</div>
+
+<script src="data.js"></script>
+<script>
+    const urlParams = new URLSearchParams(window.location.search);
+    let lessonId = urlParams.get('lesson');
+    let lessonData = null;
+    let questionsQueue = []; 
+    let currentStep = 0;
+    let selectedWords = [];
+    let isCurrentAnswerCorrect = false;
+let lessonCorrect = 0;
+let lessonWrong = 0;
+let lessonStartedAt = Date.now();
+
+    function showQuestion() {
+        if (currentStep >= questionsQueue.length) {
+            finishLesson();
+            return;
+        }
+
+        const q = questionsQueue[currentStep];
+        const area = document.getElementById('question-area');
+        const opts = document.getElementById('options');
+        const wordArea = document.getElementById('word-order-area');
+        const body = document.body;
+        
+        document.getElementById('feedback').classList.remove('show');
+        area.innerHTML = ''; opts.innerHTML = ''; wordArea.innerHTML = '';
+        selectedWords = [];
+
+        // ניהול מצב "אתגר קשה"
+        if (q.isHard) {
+            body.classList.add('hard-mode');
+            const badge = document.createElement('div');
+            badge.className = 'hard-badge';
+            badge.innerHTML = '🔥 אתגר קשה!';
+            area.appendChild(badge);
+        } else {
+            body.classList.remove('hard-mode');
+        }
+
+        if (q.type === 'word-order') {
+            wordArea.style.display = 'flex';
+            const title = document.createElement('div');
+            title.className = 'question-text';
+            title.innerHTML = `סדרו את המשפט: <br><small style="color:#666">${q.translation}</small>`;
+            area.appendChild(title);
+            
+            const shuffled = [...q.words].sort(() => Math.random() - 0.5);
+            shuffled.forEach((w, index) => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.id = 'word-btn-' + index;
+                btn.innerText = w;
+                btn.onclick = () => {
+                    if (btn.classList.contains('hidden')) return;
+                    selectedWords.push({ text: w, btnId: btn.id });
+                    btn.classList.add('hidden');
+                    renderChips(q);
+                };
+                opts.appendChild(btn);
+            });
+        } else {
+            wordArea.style.display = 'none';
+            if (q.type === 'audio-select') {
+                const audioIcon = document.createElement('button');
+                audioIcon.className = 'audio-btn';
+                audioIcon.id = 'playBtn';
+                audioIcon.innerText = '🔊';
+                area.appendChild(audioIcon);
+                
+                const title = document.createElement('div');
+                title.className = 'question-text';
+                title.innerText = 'מה שמעת?';
+                area.appendChild(title);
+
+                audioIcon.onclick = () => playAudio(q.word);
+                setTimeout(() => playAudio(q.word), 400);
+            } else {
+                const formatted = q.question.replace(/([A-Za-zÁ-ž]+)/g, '<span class="highlight">$1</span>');
+                const title = document.createElement('div');
+                title.className = 'question-text';
+                title.innerHTML = formatted;
+                area.appendChild(title);
+            }
+            
+            const shuffledOptions = [...q.options].sort(() => Math.random() - 0.5);
+            shuffledOptions.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.innerText = opt;
+                btn.onclick = () => checkAnswer(opt === q.word, q);
+                opts.appendChild(btn);
+            });
+        }
+        updateProgressBar();
+    }
+
+    function renderChips(q) {
+        const wordArea = document.getElementById('word-order-area');
+        wordArea.innerHTML = '';
+        selectedWords.forEach((item, index) => {
+            const chip = document.createElement('span');
+            chip.className = 'word-chip';
+            chip.innerText = item.text;
+            chip.onclick = () => {
+                document.getElementById(item.btnId).classList.remove('hidden');
+                selectedWords.splice(index, 1);
+                renderChips(q);
+            };
+            wordArea.appendChild(chip);
+        });
+
+        if (selectedWords.length === q.words.length) {
+            const userSentence = selectedWords.map(i => i.text).join(' ');
+            const correctSentence = q.words.join(' ');
+            checkAnswer(userSentence === correctSentence, q);
+        }
+    }
+
+ function checkAnswer(isCorrect, q) {
+    const currentQuestion = questionsQueue[currentStep];
+    if (window.CzechAppState && currentQuestion) {
+        window.CzechAppState.recordAnswer({
+            lessonId: lessonId,
+            questionIndex: currentStep,
+            prompt: currentQuestion.word || (currentQuestion.words ? currentQuestion.words.join(' ') : ''),
+            answer: currentQuestion.translation || '',
+            type: currentQuestion.type || 'unknown',
+            correct: isCorrect
+        });
+    }
+    if (isCorrect) lessonCorrect += 1; else lessonWrong += 1;
+        isCurrentAnswerCorrect = isCorrect;
+        const noteText = (q.type === 'word-order' ? q.words.join(' ') : q.word) + " = " + q.translation;
+        const f = document.getElementById('feedback');
+        f.className = 'feedback-bar show ' + (isCorrect ? 'correct' : 'wrong');
+        
+        let cleanNote = noteText.replace("לא נכון = ", "").replace("נכון = ", "");
+        document.getElementById('feedback-status').innerText = isCorrect ? 'מצוין!' : 'טעות...';
+        document.getElementById('feedback-note').innerText = isCorrect ? cleanNote : 'התשובה הנכונה: ' + cleanNote;
+        
+        document.querySelectorAll('.option-btn').forEach(b => b.style.pointerEvents = 'none');
+    }
+
+    function handleContinue() {
+        if (!isCurrentAnswerCorrect) {
+            questionsQueue.push(questionsQueue[currentStep]);
+        }
+        currentStep++;
+        showQuestion();
+    }
+
+    function updateProgressBar() {
+        const progress = (currentStep / questionsQueue.length) * 100;
+        document.getElementById('progress').style.width = progress + "%";
+    }
+
+function finishLesson() {
+    localStorage.setItem(lessonId + '_completed', 'true');
+
+    const durationSec = Math.round((Date.now() - lessonStartedAt) / 1000);
+    if (window.CzechAppState) {
+        window.CzechAppState.recordLessonComplete({
+            lessonId: lessonId,
+            correct: lessonCorrect,
+            wrong: lessonWrong,
+            durationSec: durationSec
+        });
+    }
+
+    // הסתרת כל ממשק התרגול כולל כפתור ה"בדיקה/סיום" המקורי למטה
+    document.querySelector('.progress-container').style.display = 'none';
+    if(document.querySelector('.close-btn')) document.querySelector('.close-btn').style.display = 'none';
+    if(document.querySelector('.footer')) document.querySelector('.footer').style.display = 'none'; // מסתיר את הכפתור המקורי
+    
+    const content = document.querySelector('.content');
+    
+    // מסך סיום נקי בלי מונה תרגילים
+    const total = lessonCorrect + lessonWrong;
+    const accuracy = total > 0 ? Math.round((lessonCorrect / total) * 100) : 0;
+    const xp = Math.round(lessonCorrect * 5 + (accuracy === 100 ? 20 : 0));
+
+    content.innerHTML = `
+        <div style="text-align:center; animation: popIn 0.6s cubic-bezier(0.17, 0.89, 0.32, 1.49); padding: 40px;">
+            <div style="font-size: 100px; margin-bottom: 20px;">${accuracy === 100 ? '⭐' : '🏆'}</div>
+            <h1 style="color: var(--green); font-size: 36px; margin-bottom: 10px;">כל הכבוד!</h1>
+            <p style="font-size: 22px; color: var(--dark); margin-bottom: 20px;">
+                סיימת בהצלחה את <b>${lessonData.title}</b>
+            </p>
+            <div style="display:flex; justify-content:center; gap:20px; margin-bottom:28px; flex-wrap:wrap;">
+                <div style="background:#e8f5e9; border-radius:14px; padding:14px 20px; min-width:90px;">
+                    <div style="font-size:28px; font-weight:900; color:#2e7d32;">${accuracy}%</div>
+                    <div style="font-size:12px; color:#666;">דיוק</div>
+                </div>
+                <div style="background:#e8f5e9; border-radius:14px; padding:14px 20px; min-width:90px;">
+                    <div style="font-size:28px; font-weight:900; color:#2e7d32;">${lessonCorrect}</div>
+                    <div style="font-size:12px; color:#666;">נכון</div>
+                </div>
+                <div style="background:#fce4e4; border-radius:14px; padding:14px 20px; min-width:90px;">
+                    <div style="font-size:28px; font-weight:900; color:#c62828;">${lessonWrong}</div>
+                    <div style="font-size:12px; color:#666;">טעויות</div>
+                </div>
+                <div style="background:#fff8e1; border-radius:14px; padding:14px 20px; min-width:90px;">
+                    <div style="font-size:28px; font-weight:900; color:#f57f17;">+${xp}</div>
+                    <div style="font-size:12px; color:#666;">XP</div>
+                </div>
+            </div>
+            <button class="continue-btn" 
+                    style="background: var(--green); width: 100%; max-width: 300px; position: static; box-shadow: 0 5px 0 #1da374; cursor: pointer;" 
+                    onclick="window.location.href='index.html'">
+                חזרה למפת השיעורים
+            </button>
+        </div>
+    `;
+            
+            <button class="continue-btn" 
+                    style="background: var(--green); width: 100%; max-width: 300px; position: static; box-shadow: 0 5px 0 #1da374; cursor: pointer;" 
+                    onclick="window.location.href='index.html'">
+                חזרה למפת השיעורים
+            </button>
+        </div>
+    `;
+}
+    function playAudio(t) {
+        window.speechSynthesis.cancel();
+        const m = new SpeechSynthesisUtterance(t); 
+        m.lang = 'cs-CZ'; 
+        m.rate = 0.8;
+        window.speechSynthesis.speak(m);
+    }
+
+    window.onload = function() {
+        if (typeof courseData !== 'undefined' && lessonId && courseData[lessonId]) {
+            lessonData = courseData[lessonId];
+            questionsQueue = [...lessonData.questions];
+            lessonCorrect = 0;
+            lessonWrong = 0;
+            lessonStartedAt = Date.now();
+            showQuestion();
+        }
+    };
+</script>
+</body>
+</html>
