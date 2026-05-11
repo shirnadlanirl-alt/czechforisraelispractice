@@ -232,8 +232,19 @@
 <body>
 
   <div class="header">
-    <h1>🇨🇿 ללמוד צ'כית — בעברית</h1>
-    <a href="https://www.czechforisraelis.cz">צ'כית<span>IL</span></a>
+    <div style="display:flex; align-items:center; justify-content:space-between; max-width:980px; margin:0 auto;">
+      <div>
+        <h1 style="margin:0;">🇨🇿 ללמוד צ'כית — בעברית</h1>
+        <a href="https://www.czechforisraelis.cz">צ'כית<span>IL</span></a>
+      </div>
+      <div style="display:flex; align-items:center; gap:10px; font-size:13px;">
+        <span id="user-greeting" style="color:#6b7280;"></span>
+        <button id="logout-btn"
+                style="border:none; background:#e5e7eb; color:#111827; padding:6px 12px; border-radius:999px; font-size:12px; cursor:pointer;">
+          התנתקות
+        </button>
+      </div>
+    </div>
   </div>
 
   <div class="page-shell">
