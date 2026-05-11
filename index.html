@@ -118,7 +118,7 @@
       position: relative;
       width: 100%;
       max-width: 500px;
-      height: 2600px; /* מוגדל כדי להכיל עד 16 שיעורים */
+      height: 2600px;
       padding: 50px 0;
     }
 
@@ -191,7 +191,6 @@
       box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     }
 
-    /* מיקומי הנחש – 1–16 */
     .l1  { top:  50px;  left: 50%; transform: translateX(-50%); }
     .l2  { top: 200px;  left: 20%; }
     .l3  { top: 350px;  left: 70%; }
@@ -313,7 +312,22 @@
     </div>
   </div>
 
+  <footer style="width:100%; max-width:980px; padding:16px; margin-top:12px; font-size:12px; color:#6f827c; text-align:center; box-sizing:border-box;">
+    אתר זה נוצר על ידי אלחנתי שיר (Czech for Israelis). כל הזכויות שמורות.
+    &nbsp;·&nbsp;
+    <a href="index.html">דף הבית</a>
+    &nbsp;·&nbsp;
+    <a href="https://www.czechforisraelis.cz/about.html#contact">צור קשר</a>
+    &nbsp;·&nbsp;
+    <a href="https://www.czechforisraelis.cz/privacy_policy.html">תנאי שימוש</a>
+    &nbsp;·&nbsp;
+    <a href="https://www.czechforisraelis.cz/terms_and_conditions.html">מדיניות פרטיות</a>
+  </footer>
+
+  <!-- state כללי -->
   <script src="app-state.js"></script>
+
+  <!-- קוד המפה (כמו שהיה, רק בלי window.load) -->
   <script>
     function updateProgress() {
       const overview = window.CzechAppState ? window.CzechAppState.getOverview() : null;
@@ -339,12 +353,14 @@
       }
 
       const totalLessons = 16;
+      const state = window.CzechAppState ? window.CzechAppState.getState() : null;
+      const completedLessons = state ? state.completedLessons || {} : {};
       let lastCompleted = 0;
 
       for (let i = 1; i <= totalLessons; i++) {
         const lessonId = 'lesson-' + i;
         const node = document.getElementById('node-' + i);
-        const isCompleted = localStorage.getItem(lessonId + '_completed') === 'true';
+        const isCompleted = !!completedLessons[lessonId];
 
         if (node) {
           if (isCompleted) {
@@ -379,23 +395,83 @@
       }
       svg.innerHTML = html;
     }
-
-    window.addEventListener('load', updateProgress);
-    window.addEventListener('resize', drawLines);
   </script>
-  
-  
-<footer style="width:100%; max-width:980px; padding:16px; margin-top:12px; font-size:12px; color:#6f827c; text-align:center; box-sizing:border-box;">
-  אתר זה נוצר על ידי אלחנתי שיר (Czech for Israelis). כל הזכויות שמורות.
-  &nbsp;·&nbsp;
-  <a href="index.html">דף הבית</a>
-  &nbsp;·&nbsp;
-  <a href="https://www.czechforisraelis.cz/about.html#contact">צור קשר</a>
-  &nbsp;·&nbsp;
-  <a href="https://www.czechforisraelis.cz/privacy_policy.html">תנאי שימוש</a>
-  &nbsp;·&nbsp;
-  <a href="https://www.czechforisraelis.cz/terms_and_conditions.html">מדיניות פרטיות</a>
-</footer>
 
+  <!-- Firebase + טעינת progress מהענן ואז רינדור המפה -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCl_xpEdc39WtbYF8Q9tEaOkNzuljWGn7s",
+      authDomain: "czech-for-israelis.firebaseapp.com",
+      projectId: "czech-for-israelis",
+      storageBucket: "czech-for-israelis.firebasestorage.app",
+      messagingSenderId: "482257983097",
+      appId: "1:482257983097:web:0380098930acb2f68ee6a8",
+      measurementId: "G-F8VYKQ1J80"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    window.firebaseAuth = auth;
+    window.firebaseDb = db;
+    window.firebaseDbHelpers = { doc, getDoc, setDoc };
+
+    async function loadUserProgress() {
+      const user = auth.currentUser;
+      if (!user) return;
+
+      try {
+        const ref = doc(db, "users", user.uid, "progress", "mainCourse");
+        const snap = await getDoc(ref);
+        if (!snap.exists()) {
+          return;
+        }
+
+        const cloud = snap.data();
+        const state = window.CzechAppState.getState();
+
+        const merged = {
+          ...state,
+          completedLessons: cloud.completedLessons || state.completedLessons,
+          lessonStats: cloud.lessonStats || state.lessonStats,
+          dailyStreak: cloud.dailyStreak ?? state.dailyStreak,
+          totalCorrect: cloud.totalCorrect ?? state.totalCorrect,
+          totalWrong: cloud.totalWrong ?? state.totalWrong,
+          totalXp: cloud.totalXp ?? state.totalXp,
+          lastPlayedLesson: cloud.lastPlayedLesson ?? state.lastPlayedLesson,
+          lastPlayedDate: cloud.lastPlayedDate ?? state.lastPlayedDate
+        };
+
+        window.CzechAppState.saveState(merged);
+      } catch (e) {
+        console.error("Failed to load user progress from Firestore:", e);
+      }
+    }
+
+    function initMapAfterStateReady() {
+      updateProgress();
+    }
+
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        window.location.href = "login.html";
+        return;
+      }
+
+      await loadUserProgress();
+      initMapAfterStateReady();
+    });
+
+    window.addEventListener("resize", () => {
+      if (typeof drawLines === "function") {
+        drawLines();
+      }
+    });
+  </script>
 </body>
 </html>

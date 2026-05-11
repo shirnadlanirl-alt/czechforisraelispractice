@@ -382,5 +382,38 @@ function finishLesson() {
   // חושף את handleContinue ל-HTML
   window.handleContinue = handleContinue;
 </script>
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+  // אותו config כמו ב login.html
+  const firebaseConfig = {
+    apiKey: "AIzaSyCl_xpEdc39WtbYF8Q9tEaOkNzuljWGn7s",
+    authDomain: "czech-for-israelis.firebaseapp.com",
+    projectId: "czech-for-israelis",
+    storageBucket: "czech-for-israelis.firebasestorage.app",
+    messagingSenderId: "482257983097",
+    appId: "1:482257983097:web:0380098930acb2f68ee6a8",
+    measurementId: "G-F8VYKQ1J80"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  // נעשה אותם זמינים ל app-state.js
+  window.firebaseAuth = auth;
+  window.firebaseDb = db;
+  window.firebaseDbHelpers = { doc, getDoc, setDoc };
+
+  // אופציונלי: להכריח התחברות לפני צפייה בדף
+  onAuthStateChanged(auth, (user) => {
+    if (!user) {
+      // לא מחובר → חזרה לדף ההתחברות
+      window.location.href = "login.html";
+    }
+  });
+</script>
 </body>
 </html>
