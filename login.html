@@ -264,7 +264,7 @@
       </button>
 
       <p class="hint">
-        לאחר ההרשמה תועברי למפת הקורס ותוכלי להתחיל לתרגל.
+        לאחר ההרשמה נשלח מייל אימות. יש לאשר את המייל לפני כניסה לתרגול.
       </p>
     </form>
 
@@ -275,12 +275,18 @@
     </div>
   </div>
 
-  <!-- Firebase SDK (מודולרי, דרך type="module") -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail, updateProfile, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import {
+      getAuth,
+      onAuthStateChanged,
+      signInWithEmailAndPassword,
+      createUserWithEmailAndPassword,
+      sendPasswordResetEmail,
+      sendEmailVerification,
+      updateProfile
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-    // הקונפיג שלך
     const firebaseConfig = {
       apiKey: "AIzaSyCl_xpEdc39WtbYF8Q9tEaOkNzuljWGn7s",
       authDomain: "czech-for-israelis.firebaseapp.com",
@@ -294,7 +300,6 @@
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
 
-    // אלמנטים של UI
     const tabs = document.querySelectorAll(".tab");
     const forms = {
       "login-form": document.getElementById("login-form"),
@@ -320,7 +325,6 @@
       }
     }
 
-    // החלפת טאבים
     tabs.forEach(tab => {
       tab.addEventListener("click", () => {
         tabs.forEach(t => t.classList.remove("active"));
@@ -335,10 +339,9 @@
       });
     });
 
-    // redirect אם כבר מחובר
+    // דרישה: רק משתמשים עם אימייל מאומת יכולים להמשיך לאקדמיה
     onAuthStateChanged(auth, (user) => {
-      if (user) {
-        // אם את רוצה, אפשר להחליש את זה ולתת להישאר במסך התחברות
+      if (user && user.emailVerified) {
         window.location.href = "index.html";
       }
     });
@@ -356,7 +359,12 @@
 
       try {
         showMessage("מתחברת... רגע אחד.", "hint");
-        await signInWithEmailAndPassword(auth, email, password);
+        const cred = await signInWithEmailAndPassword(auth, email, password);
+        if (!cred.user.emailVerified) {
+          showMessage("המייל לא אומת עדיין. בדקי את הדואר וודאי את הכתובת.", "error");
+          // אופציונלי: להציע שליחה חוזרת
+          return;
+        }
         showMessage("התחברת בהצלחה, מעבירה למפת הקורס...", "success");
         setTimeout(() => {
           window.location.href = "index.html";
@@ -371,7 +379,7 @@
       }
     });
 
-    // הרשמה
+    // הרשמה עם שליחת מייל אימות
     forms["signup-form"].addEventListener("submit", async (e) => {
       e.preventDefault();
       const name = document.getElementById("signup-name").value.trim();
@@ -391,13 +399,18 @@
       try {
         showMessage("יוצרת חשבון... רגע אחד.", "hint");
         const cred = await createUserWithEmailAndPassword(auth, email, password);
-        // שמירת השם בפרופיל Firebase (לא חובה, אבל נחמד)
         await updateProfile(cred.user, { displayName: name });
 
-        showMessage("החשבון נוצר בהצלחה! מעבירה למפת הקורס...", "success");
-        setTimeout(() => {
-          window.location.href = "index.html";
-        }, 700);
+        // שליחת מייל אימות
+        await sendEmailVerification(cred.user);
+        showMessage("החשבון נוצר! נשלח מייל אימות. נא לאשר את הכתובת ואז להתחבר.", "success");
+
+        // אחרי הרשמה – לא נכניס מיד לאקדמיה, נבקש שיאשרו קודם
+        // אפשר גם להחליף אוטומטית לטאב "התחברות"
+        tabs.forEach(t => t.classList.remove("active"));
+        forms["signup-form"].classList.remove("active");
+        forms["login-form"].classList.add("active");
+        tabs[0].classList.add("active");
       } catch (err) {
         console.error(err);
         let msg = "לא הצלחנו ליצור חשבון. נסי אימייל אחר.";
