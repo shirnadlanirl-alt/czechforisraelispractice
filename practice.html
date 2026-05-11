@@ -100,288 +100,287 @@
 
 <script src="data.js"></script>
 <script>
-    const urlParams = new URLSearchParams(window.location.search);
-    let lessonId = urlParams.get('lesson');
-    let lessonData = null;
-    let questionsQueue = []; 
-    let currentStep = 0;
-    let selectedWords = [];
-    let isCurrentAnswerCorrect = false;
-let lessonCorrect = 0;
-let lessonWrong = 0;
-let lessonStartedAt = Date.now();
+  // --- קריאת lessonId מתוך ה-URL ---
+  const urlParams = new URLSearchParams(window.location.search);
+  const lessonId = urlParams.get('lesson');
 
-    function showQuestion() {
-        if (currentStep >= questionsQueue.length) {
-            finishLesson();
-            return;
-        }
+  let lessonData = null;
+  let questionsQueue = [];
+  let currentStep = 0;
+  let selectedWords = [];
+  let isCurrentAnswerCorrect = false;
+  let lessonCorrect = 0;
+  let lessonWrong = 0;
+  let lessonStartedAt = Date.now();
 
-        const q = questionsQueue[currentStep];
-        const area = document.getElementById('question-area');
-        const opts = document.getElementById('options');
-        const wordArea = document.getElementById('word-order-area');
-        const body = document.body;
-        
-        document.getElementById('feedback').classList.remove('show');
-        area.innerHTML = ''; opts.innerHTML = ''; wordArea.innerHTML = '';
-        selectedWords = [];
-
-        // ניהול מצב "אתגר קשה"
-        if (q.isHard) {
-            body.classList.add('hard-mode');
-            const badge = document.createElement('div');
-            badge.className = 'hard-badge';
-            badge.innerHTML = '🔥 אתגר קשה!';
-            area.appendChild(badge);
-        } else {
-            body.classList.remove('hard-mode');
-        }
-
-        if (q.type === 'word-order') {
-            wordArea.style.display = 'flex';
-            const title = document.createElement('div');
-            title.className = 'question-text';
-            title.innerHTML = `סדרו את המשפט: <br><small style="color:#666">${q.translation}</small>`;
-            area.appendChild(title);
-            
-            const shuffled = [...q.words].sort(() => Math.random() - 0.5);
-            shuffled.forEach((w, index) => {
-                const btn = document.createElement('button');
-                btn.className = 'option-btn';
-                btn.id = 'word-btn-' + index;
-                btn.innerText = w;
-                btn.onclick = () => {
-                    if (btn.classList.contains('hidden')) return;
-                    selectedWords.push({ text: w, btnId: btn.id });
-                    btn.classList.add('hidden');
-                    renderChips(q);
-                };
-                opts.appendChild(btn);
-            });
-        } else {
-            wordArea.style.display = 'none';
-            if (q.type === 'audio-select') {
-                const audioIcon = document.createElement('button');
-                audioIcon.className = 'audio-btn';
-                audioIcon.id = 'playBtn';
-                audioIcon.innerText = '🔊';
-                area.appendChild(audioIcon);
-                
-                const title = document.createElement('div');
-                title.className = 'question-text';
-                title.innerText = 'מה שמעת?';
-                area.appendChild(title);
-
-                audioIcon.onclick = () => playAudio(q.word);
-                setTimeout(() => playAudio(q.word), 400);
-            } else {
-                const formatted = q.question.replace(/([A-Za-zÁ-ž]+)/g, '<span class="highlight">$1</span>');
-                const title = document.createElement('div');
-                title.className = 'question-text';
-                title.innerHTML = formatted;
-                area.appendChild(title);
-            }
-            
-            const shuffledOptions = [...q.options].sort(() => Math.random() - 0.5);
-            shuffledOptions.forEach(opt => {
-                const btn = document.createElement('button');
-                btn.className = 'option-btn';
-                btn.innerText = opt;
-                btn.onclick = () => checkAnswer(opt === q.word, q);
-                opts.appendChild(btn);
-            });
-        }
-        updateProgressBar();
+  function showQuestion() {
+    if (!questionsQueue || questionsQueue.length === 0) {
+      console.error('No questions loaded for lesson:', lessonId);
+      finishLesson();
+      return;
     }
 
-    function renderChips(q) {
-        const wordArea = document.getElementById('word-order-area');
-        wordArea.innerHTML = '';
-        selectedWords.forEach((item, index) => {
-            const chip = document.createElement('span');
-            chip.className = 'word-chip';
-            chip.innerText = item.text;
-            chip.onclick = () => {
-                document.getElementById(item.btnId).classList.remove('hidden');
-                selectedWords.splice(index, 1);
-                renderChips(q);
-            };
-            wordArea.appendChild(chip);
-        });
-
-        if (selectedWords.length === q.words.length) {
-            const userSentence = selectedWords.map(i => i.text).join(' ');
-            const correctSentence = q.words.join(' ');
-            checkAnswer(userSentence === correctSentence, q);
-        }
+    if (currentStep >= questionsQueue.length) {
+      finishLesson();
+      return;
     }
 
- function checkAnswer(isCorrect, q) {
-    const currentQuestion = questionsQueue[currentStep];
-    if (window.CzechAppState && currentQuestion) {
-        window.CzechAppState.recordAnswer({
-            lessonId: lessonId,
-            questionIndex: currentStep,
-            prompt: currentQuestion.word || (currentQuestion.words ? currentQuestion.words.join(' ') : ''),
-            answer: currentQuestion.translation || '',
-            type: currentQuestion.type || 'unknown',
-            correct: isCorrect
-        });
-    }
-    if (isCorrect) lessonCorrect += 1; else lessonWrong += 1;
-        isCurrentAnswerCorrect = isCorrect;
-        const noteText = (q.type === 'word-order' ? q.words.join(' ') : q.word) + " = " + q.translation;
-        const f = document.getElementById('feedback');
-        f.className = 'feedback-bar show ' + (isCorrect ? 'correct' : 'wrong');
-        
-        let cleanNote = noteText.replace("לא נכון = ", "").replace("נכון = ", "");
-        document.getElementById('feedback-status').innerText = isCorrect ? 'מצוין!' : 'טעות...';
-        document.getElementById('feedback-note').innerText = isCorrect ? cleanNote : 'התשובה הנכונה: ' + cleanNote;
-        
-        document.querySelectorAll('.option-btn').forEach(b => b.style.pointerEvents = 'none');
-    }
+    const q = questionsQueue[currentStep];
+    const area = document.getElementById('question-area');
+    const opts = document.getElementById('options');
+    const wordArea = document.getElementById('word-order-area');
+    const body = document.body;
+    const feedback = document.getElementById('feedback');
 
-    function handleContinue() {
-        if (!isCurrentAnswerCorrect) {
-            questionsQueue.push(questionsQueue[currentStep]);
-        }
-        currentStep++;
-        showQuestion();
+    feedback.classList.remove('show', 'correct', 'wrong');
+    area.innerHTML = '';
+    opts.innerHTML = '';
+    wordArea.innerHTML = '';
+    selectedWords = [];
+
+    // מצב "אתגר קשה"
+    if (q.isHard) {
+      body.classList.add('hard-mode');
+      const badge = document.createElement('div');
+      badge.className = 'hard-badge';
+      badge.innerHTML = '🔥 אתגר קשה!';
+      area.appendChild(badge);
+    } else {
+      body.classList.remove('hard-mode');
     }
 
-    function updateProgressBar() {
-        const progress = (currentStep / questionsQueue.length) * 100;
-        document.getElementById('progress').style.width = progress + "%";
+    if (q.type === 'word-order') {
+      // תרגיל סידור מילים
+      wordArea.style.display = 'flex';
+
+      const title = document.createElement('div');
+      title.className = 'question-text';
+      title.innerHTML = `סדרו את המשפט: <br><small style="color:#666">${q.translation || ''}</small>`;
+      area.appendChild(title);
+
+      const shuffled = [...q.words].sort(() => Math.random() - 0.5);
+      shuffled.forEach((w, index) => {
+        const btn = document.createElement('button');
+        btn.className = 'option-btn';
+        btn.id = 'word-btn-' + index;
+        btn.innerText = w;
+        btn.onclick = () => {
+          if (btn.classList.contains('hidden')) return;
+          selectedWords.push({ text: w, btnId: btn.id });
+          btn.classList.add('hidden');
+          renderChips(q);
+        };
+        opts.appendChild(btn);
+      });
+    } else {
+      // תרגיל רגיל (בחירה / שמע)
+      wordArea.style.display = 'none';
+
+      if (q.type === 'audio-select') {
+        const audioIcon = document.createElement('button');
+        audioIcon.className = 'audio-btn';
+        audioIcon.id = 'playBtn';
+        audioIcon.innerText = '🔊';
+        area.appendChild(audioIcon);
+
+        const title = document.createElement('div');
+        title.className = 'question-text';
+        title.innerText = 'מה שמעת?';
+        area.appendChild(title);
+
+        audioIcon.onclick = () => playAudio(q.word);
+        setTimeout(() => playAudio(q.word), 400);
+      } else {
+        const title = document.createElement('div');
+        title.className = 'question-text';
+        // הבלטת מילים לטיניות
+        const formatted = (q.question || q.word || '')
+          .replace(/([A-Za-zÁ-ž]+)/g, '<span class="highlight">$1</span>');
+        title.innerHTML = formatted;
+        area.appendChild(title);
+      }
+
+      const shuffledOptions = [...(q.options || [])].sort(() => Math.random() - 0.5);
+      shuffledOptions.forEach(opt => {
+        const btn = document.createElement('button');
+        btn.className = 'option-btn';
+        btn.innerText = opt;
+        btn.onclick = () => checkAnswer(opt === q.word, q);
+        opts.appendChild(btn);
+      });
     }
 
-function finishLesson() {
-  localStorage.setItem(lessonId + '_completed', 'true');
-
-  const durationSec = Math.round((Date.now() - lessonStartedAt) / 1000);
-  if (window.CzechAppState) {
-    window.CzechAppState.recordLessonComplete({
-      lessonId: lessonId,
-      correct: lessonCorrect,
-      wrong: lessonWrong,
-      durationSec: durationSec
-    });
+    updateProgressBar();
   }
 
-  // הסתרת ממשק התרגול
-  document.querySelector('.progress-container').style.display = 'none';
-  if (document.querySelector('.close-btn')) document.querySelector('.close-btn').style.display = 'none';
-  if (document.querySelector('.footer')) document.querySelector('.footer').style.display = 'none';
+  function renderChips(q) {
+    const wordArea = document.getElementById('word-order-area');
+    wordArea.innerHTML = '';
+    selectedWords.forEach((item, index) => {
+      const chip = document.createElement('span');
+      chip.className = 'word-chip';
+      chip.innerText = item.text;
+      chip.onclick = () => {
+        const btn = document.getElementById(item.btnId);
+        if (btn) btn.classList.remove('hidden');
+        selectedWords.splice(index, 1);
+        renderChips(q);
+      };
+      wordArea.appendChild(chip);
+    });
 
-  const content = document.querySelector('.content');
-  const total = lessonCorrect + lessonWrong;
-  const accuracy = total > 0 ? Math.round((lessonCorrect / total) * 100) : 0;
-  const xp = Math.round(lessonCorrect * 5 + (accuracy === 100 ? 20 : 0));
+    if (q.words && selectedWords.length === q.words.length) {
+      const userSentence = selectedWords.map(i => i.text).join(' ');
+      const correctSentence = q.words.join(' ');
+      checkAnswer(userSentence === correctSentence, q);
+    }
+  }
 
-  content.innerHTML = `
-    <div style="text-align:center; animation: popIn 0.6s cubic-bezier(0.17, 0.89, 0.32, 1.49); padding: 40px;">
-      <div style="font-size: 100px; margin-bottom: 20px;">${accuracy === 100 ? '⭐' : '🏆'}</div>
-      <h1 style="color: var(--green); font-size: 36px; margin-bottom: 10px;">כל הכבוד!</h1>
-      <p style="font-size: 22px; color: var(--dark); margin-bottom: 20px;">
-        סיימת בהצלחה את <b>${lessonData.title}</b>
-      </p>
-      <div style="display:flex; justify-content:center; gap:20px; margin-bottom:28px; flex-wrap:wrap;">
-        <div style="background:#e8f5e9; border-radius:14px; padding:14px 20px; min-width:90px;">
-          <div style="font-size:28px; font-weight:900; color:#2e7d32;">${accuracy}%</div>
-          <div style="font-size:12px; color:#666;">דיוק</div>
-        </div>
-        <div style="background:#e8f5e9; border-radius:14px; padding:14px 20px; min-width:90px;">
-          <div style="font-size:28px; font-weight:900; color:#2e7d32;">${lessonCorrect}</div>
-          <div style="font-size:12px; color:#666;">נכון</div>
-        </div>
-        <div style="background:#fce4e4; border-radius:14px; padding:14px 20px; min-width:90px;">
-          <div style="font-size:28px; font-weight:900; color:#c62828;">${lessonWrong}</div>
-          <div style="font-size:12px; color:#666;">טעויות</div>
-        </div>
-        <div style="background:#fff8e1; border-radius:14px; padding:14px 20px; min-width:90px;">
-          <div style="font-size:28px; font-weight:900; color:#f57f17;">+${xp}</div>
-          <div style="font-size:12px; color:#666;">XP</div>
-        </div>
-      </div>
-      <button class="continue-btn"
-              style="background: var(--green); width: 100%; max-width: 300px; position: static; box-shadow: 0 5px 0 #1da374; cursor: pointer;"
-              onclick="window.location.href='index.html'">
-        חזרה למפת השיעורים
-      </button>
-    </div>
-  `;
-}
-    // הסתרת כל ממשק התרגול כולל כפתור ה"בדיקה/סיום" המקורי למטה
-    document.querySelector('.progress-container').style.display = 'none';
-    if(document.querySelector('.close-btn')) document.querySelector('.close-btn').style.display = 'none';
-    if(document.querySelector('.footer')) document.querySelector('.footer').style.display = 'none'; // מסתיר את הכפתור המקורי
-    
+  function checkAnswer(isCorrect, q) {
+    const currentQuestion = questionsQueue[currentStep];
+
+    // עדכון סטייט גלובלי (אפשר להשאיר, לא אמור לשבור)
+    if (window.CzechAppState && currentQuestion) {
+      window.CzechAppState.recordAnswer({
+        lessonId: lessonId,
+        questionIndex: currentStep,
+        prompt: currentQuestion.word || (currentQuestion.words ? currentQuestion.words.join(' ') : ''),
+        answer: currentQuestion.translation || '',
+        type: currentQuestion.type || 'unknown',
+        correct: isCorrect
+      });
+    }
+
+    if (isCorrect) lessonCorrect += 1;
+    else lessonWrong += 1;
+
+    isCurrentAnswerCorrect = isCorrect;
+
+    const noteText = (q.type === 'word-order'
+      ? (q.words || []).join(' ')
+      : (q.word || '')) + " = " + (q.translation || '');
+
+    const f = document.getElementById('feedback');
+    f.className = 'feedback-bar show ' + (isCorrect ? 'correct' : 'wrong');
+
+    const cleanNote = noteText.replace("לא נכון = ", "").replace("נכון = ", "");
+    document.getElementById('feedback-status').innerText = isCorrect ? 'מצוין!' : 'טעות...';
+    document.getElementById('feedback-note').innerText = isCorrect
+      ? cleanNote
+      : 'התשובה הנכונה: ' + cleanNote;
+
+    document.querySelectorAll('.option-btn').forEach(b => b.style.pointerEvents = 'none');
+  }
+
+  function handleContinue() {
+    if (!isCurrentAnswerCorrect) {
+      questionsQueue.push(questionsQueue[currentStep]);
+    }
+    currentStep++;
+    showQuestion();
+  }
+
+  function updateProgressBar() {
+    const progress = questionsQueue.length > 0
+      ? (currentStep / questionsQueue.length) * 100
+      : 0;
+    document.getElementById('progress').style.width = progress + "%";
+  }
+
+function finishLesson() {
+    localStorage.setItem(lessonId + '_completed', 'true');
+
+    const durationSec = Math.round((Date.now() - lessonStartedAt) / 1000);
+    if (window.CzechAppState) {
+      const feedbackBar = document.getElementById('feedback');
+  if (feedbackBar) {
+    feedbackBar.classList.remove('show', 'correct', 'wrong');
+    feedbackBar.style.display = 'none';
+  }
+      window.CzechAppState.recordLessonComplete({
+        lessonId: lessonId,
+        correct: lessonCorrect,
+        wrong: lessonWrong,
+        durationSec: durationSec
+      });
+    }
+
+    const progressContainer = document.querySelector('.progress-container');
+    if (progressContainer) progressContainer.style.display = 'none';
+    const closeBtn = document.querySelector('.close-btn');
+    if (closeBtn) closeBtn.style.display = 'none';
+    const footer = document.querySelector('.footer');
+    if (footer) footer.style.display = 'none';
+
     const content = document.querySelector('.content');
-    
-    // מסך סיום נקי בלי מונה תרגילים
     const total = lessonCorrect + lessonWrong;
     const accuracy = total > 0 ? Math.round((lessonCorrect / total) * 100) : 0;
     const xp = Math.round(lessonCorrect * 5 + (accuracy === 100 ? 20 : 0));
 
     content.innerHTML = `
-        <div style="text-align:center; animation: popIn 0.6s cubic-bezier(0.17, 0.89, 0.32, 1.49); padding: 40px;">
-            <div style="font-size: 100px; margin-bottom: 20px;">${accuracy === 100 ? '⭐' : '🏆'}</div>
-            <h1 style="color: var(--green); font-size: 36px; margin-bottom: 10px;">כל הכבוד!</h1>
-            <p style="font-size: 22px; color: var(--dark); margin-bottom: 20px;">
-                סיימת בהצלחה את <b>${lessonData.title}</b>
-            </p>
-            <div style="display:flex; justify-content:center; gap:20px; margin-bottom:28px; flex-wrap:wrap;">
-                <div style="background:#e8f5e9; border-radius:14px; padding:14px 20px; min-width:90px;">
-                    <div style="font-size:28px; font-weight:900; color:#2e7d32;">${accuracy}%</div>
-                    <div style="font-size:12px; color:#666;">דיוק</div>
-                </div>
-                <div style="background:#e8f5e9; border-radius:14px; padding:14px 20px; min-width:90px;">
-                    <div style="font-size:28px; font-weight:900; color:#2e7d32;">${lessonCorrect}</div>
-                    <div style="font-size:12px; color:#666;">נכון</div>
-                </div>
-                <div style="background:#fce4e4; border-radius:14px; padding:14px 20px; min-width:90px;">
-                    <div style="font-size:28px; font-weight:900; color:#c62828;">${lessonWrong}</div>
-                    <div style="font-size:12px; color:#666;">טעויות</div>
-                </div>
-                <div style="background:#fff8e1; border-radius:14px; padding:14px 20px; min-width:90px;">
-                    <div style="font-size:28px; font-weight:900; color:#f57f17;">+${xp}</div>
-                    <div style="font-size:12px; color:#666;">XP</div>
-                </div>
-            </div>
-            <button class="continue-btn" 
-                    style="background: var(--green); width: 100%; max-width: 300px; position: static; box-shadow: 0 5px 0 #1da374; cursor: pointer;" 
-                    onclick="window.location.href='index.html'">
-                חזרה למפת השיעורים
-            </button>
+      <div style="text-align:center; animation: popIn 0.6s cubic-bezier(0.17, 0.89, 0.32, 1.49); padding: 40px;">
+        <div style="font-size: 100px; margin-bottom: 20px;">${accuracy === 100 ? '⭐' : '🏆'}</div>
+        <h1 style="color: var(--green); font-size: 36px; margin-bottom: 10px;">כל הכבוד!</h1>
+        <p style="font-size: 22px; color: var(--dark); margin-bottom: 20px;">
+          סיימת בהצלחה את <b>${lessonData ? lessonData.title : ''}</b>
+        </p>
+        <div style="display:flex; justify-content:center; gap:20px; margin-bottom:28px; flex-wrap:wrap;">
+          <div style="background:#e8f5e9; border-radius:14px; padding:14px 20px; min-width:90px;">
+            <div style="font-size:28px; font-weight:900; color:#2e7d32;">${accuracy}%</div>
+            <div style="font-size:12px; color:#666;">דיוק</div>
+          </div>
+          <div style="background:#e8f5e9; border-radius:14px; padding:14px 20px; min-width:90px;">
+            <div style="font-size:28px; font-weight:900; color:#2e7d32;">${lessonCorrect}</div>
+            <div style="font-size:12px; color:#666;">נכון</div>
+          </div>
+          <div style="background:#fce4e4; border-radius:14px; padding:14px 20px; min-width:90px;">
+            <div style="font-size:28px; font-weight:900; color:#c62828;">${lessonWrong}</div>
+            <div style="font-size:12px; color:#666;">טעויות</div>
+          </div>
+          <div style="background:#fff8e1; border-radius:14px; padding:14px 20px; min-width:90px;">
+            <div style="font-size:28px; font-weight:900; color:#f57f17;">+${xp}</div>
+            <div style="font-size:12px; color:#666;">XP</div>
+          </div>
         </div>
+        <button class="continue-btn"
+                style="background: var(--green); width: 100%; max-width: 300px; position: static; box-shadow: 0 5px 0 #1da374; cursor: pointer;"
+                onclick="window.location.href='index.html'">
+          חזרה למפת השיעורים
+        </button>
+      </div>
     `;
-            
-            <button class="continue-btn" 
-                    style="background: var(--green); width: 100%; max-width: 300px; position: static; box-shadow: 0 5px 0 #1da374; cursor: pointer;" 
-                    onclick="window.location.href='index.html'">
-                חזרה למפת השיעורים
-            </button>
-        </div>
-    `;
-}
-    function playAudio(t) {
-        window.speechSynthesis.cancel();
-        const m = new SpeechSynthesisUtterance(t); 
-        m.lang = 'cs-CZ'; 
-        m.rate = 0.8;
-        window.speechSynthesis.speak(m);
+  }
+
+  function playAudio(t) {
+    if (!t) return;
+    window.speechSynthesis.cancel();
+    const m = new SpeechSynthesisUtterance(t);
+    m.lang = 'cs-CZ';
+    m.rate = 0.8;
+    window.speechSynthesis.speak(m);
+  }
+
+  window.onload = function () {
+    if (typeof courseData === 'undefined') {
+      console.error('courseData is not defined – data.js not loaded');
+      return;
+    }
+    if (!lessonId || !courseData[lessonId]) {
+      console.error('Invalid or missing lessonId:', lessonId);
+      return;
     }
 
-    window.onload = function() {
-        if (typeof courseData !== 'undefined' && lessonId && courseData[lessonId]) {
-            lessonData = courseData[lessonId];
-            questionsQueue = [...lessonData.questions];
-            lessonCorrect = 0;
-            lessonWrong = 0;
-            lessonStartedAt = Date.now();
-            showQuestion();
-        }
-    };
+    lessonData = courseData[lessonId];
+    questionsQueue = Array.isArray(lessonData.questions) ? [...lessonData.questions] : [];
+    lessonCorrect = 0;
+    lessonWrong = 0;
+    lessonStartedAt = Date.now();
+
+    showQuestion();
+  };
+
+  // חושף את handleContinue ל-HTML
+  window.handleContinue = handleContinue;
 </script>
 </body>
 </html>

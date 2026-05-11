@@ -8,18 +8,18 @@
   const STORAGE_KEY = 'czechAppState_v1';
 
   const ACHIEVEMENTS_DEF = [
-    { id: 'first_lesson',       label: 'שיעור ראשון',         desc: 'סיימת את השיעור הראשון שלך',          icon: '🎉', check: s => Object.keys(s.completedLessons).length >= 1 },
-    { id: 'three_lessons',      label: 'שלושה שיעורים',       desc: 'סיימת 3 שיעורים',                      icon: '📚', check: s => Object.keys(s.completedLessons).length >= 3 },
-    { id: 'five_lessons',       label: 'חמישה שיעורים',       desc: 'סיימת 5 שיעורים',                      icon: '🏅', check: s => Object.keys(s.completedLessons).length >= 5 },
-    { id: 'all_lessons',        label: 'קורס מושלם',          desc: 'סיימת את כל השיעורים בקורס',           icon: '🏆', check: s => Object.keys(s.completedLessons).length >= 12 },
-    { id: 'perfect_lesson',     label: 'שיעור מושלם',         desc: 'סיימת שיעור עם 100% דיוק',             icon: '⭐', check: s => Object.values(s.lessonStats).some(l => l.accuracy === 100) },
-    { id: 'streak_3',           label: '3 ימים רצופים',       desc: '3 ימי לימוד ברצף',                     icon: '🔥', check: s => s.dailyStreak >= 3 },
-    { id: 'streak_7',           label: 'שבוע שלם',            desc: '7 ימי לימוד ברצף',                     icon: '🔥🔥', check: s => s.dailyStreak >= 7 },
-    { id: '50_correct',         label: '50 תשובות נכונות',    desc: 'ענית נכון על 50 שאלות',                icon: '✅', check: s => s.totalCorrect >= 50 },
-    { id: '100_correct',        label: '100 תשובות נכונות',   desc: 'ענית נכון על 100 שאלות',               icon: '💯', check: s => s.totalCorrect >= 100 },
-    { id: 'first_review',       label: 'חזרה ראשונה',         desc: 'השלמת סשן חזרה ראשון',                 icon: '🔄', check: s => s.totalReviewSessions >= 1 },
-    { id: '5_hard_improved',    label: 'שיפור מילים קשות',    desc: 'שיפרת 5 מילים קשות',                   icon: '💪', check: s => s.hardWordsImproved >= 5 },
-    { id: 'xp_100',             label: '100 XP',               desc: 'צברת 100 נקודות ניסיון',               icon: '⚡', check: s => s.totalXp >= 100 },
+    { id: 'first_lesson',   label: 'שיעור ראשון',      desc: 'סיימת את השיעור הראשון שלך',        icon: '🎉',  check: s => Object.keys(s.completedLessons).length >= 1 },
+    { id: 'three_lessons',  label: 'שלושה שיעורים',    desc: 'סיימת 3 שיעורים',                   icon: '📚',  check: s => Object.keys(s.completedLessons).length >= 3 },
+    { id: 'five_lessons',   label: 'חמישה שיעורים',    desc: 'סיימת 5 שיעורים',                   icon: '🏅',  check: s => Object.keys(s.completedLessons).length >= 5 },
+    { id: 'all_lessons',    label: 'קורס מושלם',       desc: 'סיימת את כל השיעורים בקורס',        icon: '🏆',  check: s => Object.keys(s.completedLessons).length >= 12 },
+    { id: 'perfect_lesson', label: 'שיעור מושלם',      desc: 'סיימת שיעור עם 100% דיוק',          icon: '⭐',  check: s => Object.values(s.lessonStats).some(l => l.accuracy === 100) },
+    { id: 'streak_3',       label: '3 ימים רצופים',    desc: '3 ימי לימוד ברצף',                  icon: '🔥',  check: s => s.dailyStreak >= 3 },
+    { id: 'streak_7',       label: 'שבוע שלם',         desc: '7 ימי לימוד ברצף',                  icon: '🔥🔥', check: s => s.dailyStreak >= 7 },
+    { id: '50_correct',     label: '50 תשובות נכונות', desc: 'ענית נכון על 50 שאלות',             icon: '✅',  check: s => s.totalCorrect >= 50 },
+    { id: '100_correct',    label: '100 תשובות נכונות',desc: 'ענית נכון על 100 שאלות',            icon: '💯',  check: s => s.totalCorrect >= 100 },
+    { id: 'first_review',   label: 'חזרה ראשונה',      desc: 'השלמת סשן חזרה ראשון',              icon: '🔄',  check: s => s.totalReviewSessions >= 1 },
+    { id: '5_hard_improved',label: 'שיפור מילים קשות', desc: 'שיפרת 5 מילים קשות',               icon: '💪',  check: s => s.hardWordsImproved >= 5 },
+    { id: 'xp_100',         label: '100 XP',           desc: 'צברת 100 נקודות ניסיון',            icon: '⚡',  check: s => s.totalXp >= 100 },
   ];
 
   function defaultState() {
@@ -54,7 +54,9 @@
   function saveState(state) {
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-    } catch (e) { /* storage full */ }
+    } catch (e) {
+      // storage full – מתעלמים בשקט
+    }
   }
 
   // Migration משמירה הישנה של lesson-X_completed

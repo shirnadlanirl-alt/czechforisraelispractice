@@ -40,9 +40,35 @@ const courseData = {
             { type: "word-order", words: ["Děkuju", "moc", "za", "všechno"], translation: "תודה רבה על הכל" },
             { type: "word-order", words: ["Ahoj,", "jak", "se", "máš?"], translation: "היי, מה קורה?" },
             { type: "word-order", words: ["Ty", "jsi", "tady"], translation: "אתה כאן" },
-            { type: "word-order", words: ["Já", "nerozumím"], translation: "אני לא מבין" }
+            { type: "word-order", words: ["Já", "nerozumím"], translation: "אני לא מבין" },
+                // --- חלק 6: ביטויי עזרה ונימוס (31-38) ---
+    { word: "Nerozumím", options: ["Nerozumím", "Rozumím", "Nejsem"], translation: "אני לא מבין / לא מבינה", type: "audio-select" },
+    { question: "איך אומרים 'אני לא מבינה' בצ'כית?", word: "Nerozumím", options: ["Nerozumím", "Nevím", "Nechci"], translation: "I do not understand", type: "translate-select" },
+
+    { word: "Opakujte, prosím", options: ["Opakujte, prosím", "Mluvte pomaleji, prosím", "Prosím, pojďte"], translation: "תחזרי בבקשה", type: "audio-select" },
+    { word: "Mluvte pomaleji, prosím", options: ["Mluvte rychleji, prosím", "Mluvte pomaleji, prosím", "Mluvte česky, prosím"], translation: "תדברי יותר לאט בבקשה", type: "audio-select" },
+
+    { question: "מה תגידי כשאת רוצה לומר 'סליחה, אני מצטערת'?", word: "Je mi líto", options: ["Je mi líto", "To nic", "Nevím"], translation: "I'm sorry", type: "translate-select" },
+    { word: "To nic", options: ["To nic", "To je drahé", "To je dobré"], translation: "לא נורא / הכל בסדר", type: "audio-select" },
+
+    { word: "Čau", options: ["Čau", "Na shledanou", "Dobrý den"], translation: "היי / ביי (לא רשמי)", type: "audio-select" },
+    { question: "איך אומרים 'להתראות, שיהיה לך נעים'?", word: "Mějte se hezky", options: ["Mějte se hezky", "Mluvte pomaleji", "Prosím vás"], translation: "Have a nice time / Take care", type: "translate-select" },
+        // --- חלק 7: בבית הקפה (39-46) ---
+    { word: "Kafe", options: ["Kafe", "Čaj", "Pivo"], translation: "קפה", type: "audio-select" },
+    { word: "Čaj", options: ["Voda", "Víno", "Čaj"], translation: "תה", type: "audio-select" },
+    { word: "Pivo", options: ["Pivo", "Kafe", "Džus"], translation: "בירה", type: "audio-select" },
+
+    { question: "איך אומרים 'קפה אחד בבקשה'?", word: "Jedno kafe, prosím", options: ["Jedno kafe, prosím", "Jedno pivo, prosím", "Dám si kafe"], translation: "One coffee, please", type: "translate-select" },
+
+    { question: "איך אומרים 'אני אקח תה, בבקשה'?", word: "Dám si čaj, prosím", options: ["Dám si čaj, prosím", "Mám čaj, prosím", "Chci čaj, prosím"], translation: "I'll have tea, please", type: "translate-select" },
+
+    { word: "Zaplatím, prosím", options: ["Zaplatím, prosím", "Děkuju moc", "Mluvte pomaleji, prosím"], translation: "אפשר חשבון, בבקשה", type: "audio-select" },
+
+    { type: "word-order", words: ["Jedno", "pivo,", "prosím"], translation: "בירה אחת, בבקשה" },
+    { type: "word-order", words: ["Dám", "si", "kafe"], translation: "אני אקח קפה" }
         ]
     },
+    
            "lesson-2": {
         title: "שיעור 2: היכרות ופרטים",
         questions: [
@@ -53,7 +79,66 @@ const courseData = {
             { word: "Odkud jsi?", options: ["Kdo jsi?", "Odkud jsi?", "Kam jdeš?"], translation: "מאיפה אתה?", type: "audio-select" },
             { question: "איך אומרים 'אני מישראל'?", word: "Jsem z Izraele", options: ["Jsem z Izraele", "Jsem z Prahy", "Jsem z Česka"], translation: "I am from Israel", type: "translate-select" },
             { question: "האם הפירוש של 'Těší mě' הוא 'סליחה'?", word: "לא נכון", options: ["נכון", "לא נכון"], translation: "Těší mě = נעים להכיר", type: "translate-select" },
+        // --- חלק נוסף: שיחת היכרות בסיסית (X) ---
+        { 
+          question: "איך שואלים 'מה שלומך?' (לא רשמי)?", 
+          word: "Jak se máš?", 
+          options: ["Jak se máš?", "Jak se jmenuješ?", "Kde bydlíš?"], 
+          translation: "How are you? (informal)", 
+          type: "translate-select" 
+        },
 
+        { 
+          word: "Mám se dobře.", 
+          options: ["Mám se dobře.", "Nemám se dobře.", "Nevím."], 
+          translation: "אני מרגיש/ה טוב", 
+          type: "audio-select" 
+        },
+
+        { 
+          question: "איך אומרים 'אני מרגישה טוב, ומה איתך?'?", 
+          word: "Mám se dobře. A ty?", 
+          options: ["Mám se dobře. A ty?", "Jsem z Izraele.", "Bydlím v Praze."], 
+          translation: "I feel good. And you?", 
+          type: "translate-select" 
+        },
+
+        { 
+          question: "איך שואלים 'איפה אתה גר/ה?'?", 
+          word: "Kde bydlíš?", 
+          options: ["Kde bydlíš?", "Odkud jsi?", "Kde jsi?"], 
+          translation: "Where do you live? (informal)", 
+          type: "translate-select" 
+        },
+
+        { 
+          word: "Bydlím v Praze.", 
+          options: ["Bydlím v Praze.", "Jsem z Prahy.", "Jsem v Praze."], 
+          translation: "אני גר/ה בפראג", 
+          type: "audio-select" 
+        },
+
+        { 
+          question: "איך אומרים 'אני סטודנטית' (נקבה)?", 
+          word: "Jsem studentka", 
+          options: ["Jsem studentka", "Jsem student", "Jsem doktor"], 
+          translation: "I am a student (female)", 
+          type: "translate-select" 
+        },
+
+        { 
+          type: "word-order", 
+          words: ["Ahoj,", "já", "jsem", "Shir"], 
+          translation: "היי, אני שיר" 
+        },
+
+        { 
+          type: "word-order", 
+          words: ["Jsem", "z", "Izraele", "a", "bydlím", "v", "Praze"], 
+          translation: "אני מישראל וגר/ה בפראג" 
+        },
+
+        // --- חלק 2: דקדוק - הפועל 'להיות' (Být) (7-12) ---
             // --- חלק 2: דקדוק - הפועל 'להיות' (Být) (7-12) ---
             { question: "איך אומרים 'אני' (I am)?", word: "Jsem", options: ["Jsem", "Jsi", "Je"], translation: "I am", type: "translate-select" },
             { question: "איך אומרים 'אתה/את' (You are)?", word: "Jsi", options: ["Jsem", "Jsi", "Jsme"], translation: "You are", type: "translate-select" },
@@ -462,5 +547,184 @@ const courseData = {
             { type: "word-order", words: ["Učím", "se", "česky", "každý", "den"], translation: "אני לומד צ'כית כל יום" },
             { question: "סיימת את הקורס!", word: "Gratuluju!", options: ["Děkuju!", "Gratuluju!", "Prosím!"], translation: "מזל טוב / ברכות!", type: "translate-select" }
         ]
+    },
+"lesson-13": {
+  title: "שיעור 13: בריאות ורופאים",
+  questions: [
+    // --- חלק 1: חלקי גוף בסיסיים ---
+    { word: "Hlava", options: ["Hlava", "Ruka", "Noga"], translation: "ראש", type: "audio-select" },
+    { word: "Ruka", options: ["Ruka", "Noga", "Břicho"], translation: "יד / זרוע", type: "audio-select" },
+    { word: "Noga", options: ["Ruka", "Noga", "Hlava"], translation: "רגל", type: "audio-select" },
+    { word: "Břicho", options: ["Břicho", "Záda", "Hlava"], translation: "בטן", type: "audio-select" },
+    { word: "Záda", options: ["Záda", "Ruka", "Noga"], translation: "גב", type: "audio-select" },
+
+    // --- חלק 2: מצבים ובריאות כללית ---
+    { word: "Nemocný", options: ["Zdravý", "Nemocný", "Unavený"], translation: "חולה (זכר)", type: "audio-select" },
+    { word: "Zdravý", options: ["Zdravý", "Nemocný", "Smutný"], translation: "בריא (זכר)", type: "audio-select" },
+    { word: "Unavený", options: ["Unavený", "Veselý", "Hladový"], translation: "עייף (זכר)", type: "audio-select" },
+    { word: "Bolí mě hlava", options: ["Bolí mě hlava", "Bolí mě břicho", "Je mi dobře"], translation: "כואב לי הראש", type: "audio-select" },
+    { word: "Je mi špatně", options: ["Je mi dobře", "Je mi špatně", "Je mi jedno"], translation: "אני מרגיש/ה לא טוב", type: "audio-select" },
+
+    // --- חלק 3: אצל הרופא ---
+    { word: "Doktor", options: ["Doktor", "Sestra", "Pacient"], translation: "רופא", type: "audio-select" },
+    { word: "Sestra", options: ["Sestra", "Doktor", "Pacient"], translation: "אחות (אחות רפואית)", type: "audio-select" },
+    { word: "Pacient", options: ["Pacient", "Doktor", "Sestra"], translation: "מטופל", type: "audio-select" },
+    { word: "Lékař", options: ["Lékař", "Lékárna", "Nemocnice"], translation: "רופא (צורה רשמית)", type: "audio-select" },
+    { word: "Nemocnice", options: ["Nemocnice", "Lékárna", "Klinika"], translation: "בית חולים", type: "audio-select" },
+    { word: "Lékárna", options: ["Lékárna", "Nemocnice", "Obchod"], translation: "בית מרקחת", type: "audio-select" },
+
+    // --- חלק 4: שאלות שימושיות אצל הרופא ---
+    { question: "איך אומרים 'אני מרגישה לא טוב' (נקבה)?", word: "Je mi špatně", options: ["Je mi dobře", "Je mi špatně", "Jsem unavená"], translation: "I feel bad / not well", type: "translate-select" },
+    { question: "איך אומרים 'כואבת לי הבטן'?", word: "Bolí mě břicho", options: ["Bolí mě břicho", "Bolí mě hlava", "Bolí mě záda"], translation: "My stomach hurts", type: "translate-select" },
+    { question: "איך אומרים 'אני חולה' (זכר)?", word: "Jsem nemocný", options: ["Jsem nemocný", "Jsem zdravý", "Jsem unavený"], translation: "I am sick (m)", type: "translate-select" },
+    { question: "איך אומרים 'יש לי חום'?", word: "Mám horečku", options: ["Mám horečku", "Mám rýmu", "Mám kašel"], translation: "I have a fever", type: "translate-select" },
+    { question: "איך אומרים 'אני אלרגית ל…' (נקבה)?", word: "Jsem alergická na...", options: ["Jsem alergická na...", "Jsem těhotná", "Jsem nemocná"], translation: "I am allergic to...", type: "translate-select" },
+
+    // --- חלק 5: מחלות ותסמינים ---
+    { word: "Rýma", options: ["Rýma", "Kašel", "Horečka"], translation: "נזלת", type: "audio-select" },
+    { word: "Kašel", options: ["Rýma", "Kašel", "Bolest"], translation: "שיעול", type: "audio-select" },
+    { word: "Horečka", options: ["Rýma", "Horečka", "Bolest"], translation: "חום", type: "audio-select" },
+    { word: "Bolest", options: ["Bolest", "Nemoc", "Zdraví"], translation: "כאב", type: "audio-select" },
+    { word: "Lék", options: ["Lék", "Lékař", "Lékárna"], translation: "תרופה", type: "audio-select" },
+
+    // --- חלק 6: סידור משפטים (ביקור אצל הרופא) ---
+    { type: "word-order", words: ["Mám", "rýmu", "a", "kašel"], translation: "יש לי נזלת ושיעול" },
+    { type: "word-order", words: ["Bolí", "mě", "břicho"], translation: "כואבת לי הבטן" },
+    { type: "word-order", words: ["Chci", "k", "doktorovi"], translation: "אני רוצה לרופא" },
+    { type: "word-order", words: ["Musím", "do", "nemocnice"], translation: "אני חייב/ת לבית חולים" },
+    { type: "word-order", words: ["Mám", "alergii", "na", "penicilin"], translation: "יש לי אלרגיה לפניצילין" }
+  ]
+},
+"lesson-14": {
+  title: "שיעור 14: כסף ובנק",
+  questions: [
+    // --- חלק 1: כסף בסיסי ומטבע ---
+    { word: "Peníze", options: ["Peníze", "Karta", "Banka"], translation: "כסף", type: "audio-select" },
+    { word: "Koruna", options: ["Koruna", "Euro", "Dolar"], translation: "קורונה (מטבע צ'כי)", type: "audio-select" },
+    { word: "Euro", options: ["Koruna", "Euro", "Libra"], translation: "אירו", type: "audio-select" },
+    { word: "Bankovka", options: ["Bankovka", "Mince", "Karta"], translation: "שטר", type: "audio-select" },
+    { word: "Mince", options: ["Mince", "Bankovka", "Účet"], translation: "מטבע", type: "audio-select" },
+
+    // --- חלק 2: בבנק ובחשבון ---
+    { word: "Banka", options: ["Banka", "Obchod", "Pošta"], translation: "בנק", type: "audio-select" },
+    { word: "Účet", options: ["Účet", "Karta", "Peníze"], translation: "חשבון (בנק / חשבון לתשלום)", type: "audio-select" },
+    { word: "Bankovní účet", options: ["Bankovní účet", "Spoření", "Půjčka"], translation: "חשבון בנק", type: "audio-select" },
+    { word: "Hotovost", options: ["Hotovost", "Karta", "Půjčka"], translation: "מזומן", type: "audio-select" },
+    { word: "Platební karta", options: ["Platební karta", "Hotovost", "Mince"], translation: "כרטיס תשלום (אשראי/דביט)", type: "audio-select" },
+
+    // --- חלק 3: פעולות בנקאיות ---
+    { word: "Vklad", options: ["Vklad", "Výběr", "Převod"], translation: "הפקדה", type: "audio-select" },
+    { word: "Výběr", options: ["Vklad", "Výběr", "Půjčka"], translation: "משיכה", type: "audio-select" },
+    { word: "Převod", options: ["Převod", "Úrok", "Výběr"], translation: "העברה (בנקאית)", type: "audio-select" },
+    { word: "Půjčka", options: ["Půjčka", "Spoření", "Účet"], translation: "הלוואה", type: "audio-select" },
+    { word: "Spoření", options: ["Spoření", "Půjčka", "Úrok"], translation: "חיסכון", type: "audio-select" },
+    { word: "Úrok", options: ["Úrok", "Platba", "Výplata"], translation: "ריבית", type: "audio-select" },
+
+    // --- חלק 4: תשלומים וקניות ---
+    { word: "Platba", options: ["Platba", "Výplata", "Sleva"], translation: "תשלום", type: "audio-select" },
+    { word: "Výplata", options: ["Výplata", "Půjčka", "Platba"], translation: "משכורת (תשלום שמקבלים)", type: "audio-select" },
+    { word: "Sleva", options: ["Sleva", "Cena", "Drahý"], translation: "הנחה", type: "audio-select" },
+    { word: "Drahý", options: ["Drahý", "Levný", "Zadarmo"], translation: "יקר", type: "audio-select" },
+    { word: "Levný", options: ["Levný", "Drahý", "Zadarmo"], translation: "זול", type: "audio-select" },
+    { word: "Zadarmo", options: ["Zadarmo", "Drahý", "Sleva"], translation: "בחינם", type: "audio-select" },
+
+    // --- חלק 5: שאלות שימושיות ---
+    { question: "איך שואלים 'כמה זה עולה?'?", word: "Kolik to stojí?", options: ["Kolik to stojí?", "Kolik je hodin?", "Kde to je?"], translation: "כמה זה עולה?", type: "translate-select" },
+    { question: "איך אומרים 'אפשר לשלם בכרטיס?'?", word: "Můžu platit kartou?", options: ["Můžu platit kartou?", "Můžu platit hotově?", "Můžu to zkusit?"], translation: "אפשר לשלם בכרטיס?", type: "translate-select" },
+    { question: "איך אומרים 'איפה הכספומט?'?", word: "Kde je bankomat?", options: ["Kde je bankomat?", "Kde je banka?", "Kde je pokladna?"], translation: "איפה הכספומט?", type: "translate-select" },
+    { question: "איך אומרים 'אני צריך לפתוח חשבון בנק'?", word: "Potřebuji si otevřít účet v bance.", options: ["Potřebuji si otevřít účet v bance.", "Potřebuji zaplatit účet.", "Potřebuji hotovost."], translation: "אני צריך לפתוח חשבון בנק.", type: "translate-select" },
+    { question: "איך אומרים 'אני רוצה להחליף כסף'?", word: "Chci vyměnit peníze.", options: ["Chci vyměnit peníze.", "Chci vybrat peníze.", "Chci vložit peníze."], translation: "אני רוצה להחליף כסף.", type: "translate-select" },
+
+    // --- חלק 6: סידור משפטים (בבנק ובכסף) ---
+    { type: "word-order", words: ["Kolik", "to", "stojí?"], translation: "כמה זה עולה?" },
+    { type: "word-order", words: ["Můžu", "platit", "kartou?"], translation: "אפשר לשלם בכרטיס?" },
+    { type: "word-order", words: ["Chci", "vybrat", "peníze"], translation: "אני רוצה למשוך כסף" },
+    { type: "word-order", words: ["Potřebuji", "vyměnit", "eura"], translation: "אני צריך להחליף אירו" },
+    { type: "word-order", words: ["Mám", "účet", "v", "české", "bance"], translation: "יש לי חשבון בבנק צ'כי" }
+  ]
+},
+    "lesson-15": {
+      title: "שיעור 15: שאלות באוניברסיטה",
+      questions: [
+        // --- חלק 1: מילים בסיסיות באוניברסיטה (חיזוק לקסיקון) ---
+        { word: "Univerzita", options: ["Univerzita", "Škola", "Kancelář"], translation: "אוניברסיטה", type: "audio-select" },
+        { word: "Fakulta", options: ["Fakulta", "Nemocnice", "Banka"], translation: "פקולטה", type: "audio-select" },
+        { word: "Knihovna", options: ["Knihovna", "Kavárna", "Menza"], translation: "ספרייה", type: "audio-select" },
+        { word: "Učebna", options: ["Učebna", "Kancelář", "Pokoj"], translation: "כיתת לימוד", type: "audio-select" },
+        { word: "Menza", options: ["Menza", "Restaurace", "Kavárna"], translation: "קפיטריה / חדר אוכל סטודנטים", type: "audio-select" },
+        { word: "Hodina", options: ["Hodina", "Den", "Týden"], translation: "שיעור / שעה", type: "audio-select" },
+
+        // --- חלק 2: שאלות בסיסיות (מה, איפה, מתי) ---
+        { word: "Co?", options: ["Co?", "Kde?", "Kdy?"], translation: "מה?", type: "audio-select" },
+        { word: "Kde?", options: ["Co?", "Kde?", "Kdo?"], translation: "איפה?", type: "audio-select" },
+        { word: "Kdy?", options: ["Kdy?", "Kolik?", "Jak?"], translation: "מתי?", type: "audio-select" },
+        { word: "Kolik?", options: ["Kolik?", "Kdo?", "Co?"], translation: "כמה?", type: "audio-select" },
+        { word: "Proč?", options: ["Proč?", "Kde?", "Kdy?"], translation: "למה?", type: "audio-select" },
+        { word: "Jak?", options: ["Jak?", "Kdo?", "Kolik?"], translation: "איך?", type: "audio-select" },
+
+        // --- חלק 3: שאלות שימושיות באוניברסיטה ---
+        { question: "איך שואלים 'איפה הספרייה?'?", word: "Kde je knihovna?", options: ["Kde je knihovna?", "Kdy je knihovna?", "Co je knihovna?"], translation: "איפה הספרייה?", type: "translate-select" },
+        { question: "איך שואלים 'איפה הכיתה 12?'?", word: "Kde je učebna 12?", options: ["Kde je učebna 12?", "Kde je fakulta?", "Co je učebna 12?"], translation: "איפה כיתה 12?", type: "translate-select" },
+        { question: "איך שואלים 'מתי השיעור?'?", word: "Kdy je hodina?", options: ["Kdy je hodina?", "Kde je hodina?", "Kolik je hodina?"], translation: "מתי השיעור?", type: "translate-select" },
+        { question: "איך שואלים 'איזה קורס יש היום?'?", word: "Jaký kurz je dnes?", options: ["Jaký kurz je dnes?", "Jaký kurz je zítra?", "Jaká je knihovna dnes?"], translation: "איזה קורס יש היום?", type: "translate-select" },
+        { question: "איך שואלים 'כמה זמן השיעור?'?", word: "Kolik trvá hodina?", options: ["Kolik trvá hodina?", "Kolik stojí hodina?", "Kdy trvá hodina?"], translation: "כמה זמן השיעור?", type: "translate-select" },
+        { question: "איך שואלים 'איזה חדר זה?'?", word: "Jaký je to pokoj?", options: ["Jaký je to pokoj?", "Kde je to pokoj?", "Co je to pokoj?"], translation: "איזה חדר זה?", type: "translate-select" },
+
+        // --- חלק 4: שאלות על לימודים (מחזקים גם מילים מוכרות) ---
+        { question: "איך שואלים 'מה את/ה לומד/ת?'?", word: "Co studuješ?", options: ["Co studuješ?", "Kde studuješ?", "Kdy studuješ?"], translation: "מה אתה לומד?", type: "translate-select" },
+        { question: "איך שואלים 'איפה את/ה לומד/ת?'?", word: "Kde studuješ?", options: ["Kde studuješ?", "Kdo studuješ?", "Kdy studuješ?"], translation: "איפה אתה לומד?", type: "translate-select" },
+        { question: "איך שואלים 'עם מי את/ה לומד/ת?'?", word: "S kým studuješ?", options: ["S kým studuješ?", "Co studuješ?", "Kde studuješ?"], translation: "עם מי אתה לומד?", type: "translate-select" },
+        { question: "איך שואלים 'למה את/ה לומד/ת צ'כית?'?", word: "Proč studuješ češtinu?", options: ["Proč studuješ češtinu?", "Kde studuješ češtinu?", "Co je čeština?"], translation: "למה אתה לומד צ'כית?", type: "translate-select" },
+        { question: "איך שואלים 'מתי יש לך מבחן?'?", word: "Kdy máš zkoušku?", options: ["Kdy máš zkoušku?", "Kde máš zkoušku?", "Co máš zkoušku?"], translation: "מתי יש לך מבחן?", type: "translate-select" },
+        { question: "איך שואלים 'כמה מבחנים יש לך השבוע?'?", word: "Kolik zkoušek máš tento týden?", options: ["Kolik zkoušek máš tento týden?", "Kolik hodin máš dnes?", "Kolik stojí zkouška?"], translation: "כמה מבחנים יש לך השבוע?", type: "translate-select" },
+
+        // --- חלק 5: סידור משפטים עם שאלות ---
+        { type: "word-order", words: ["Kde", "je", "univerzita?"], translation: "איפה האוניברסיטה?" },
+        { type: "word-order", words: ["Kdy", "máš", "hodinu?"], translation: "מתי יש לך שיעור?" },
+        { type: "word-order", words: ["Co", "dnes", "studuješ?"], translation: "מה אתה לומד היום?" },
+        { type: "word-order", words: ["Kolik", "zkoušek", "máš?"], translation: "כמה מבחנים יש לך?" },
+        { type: "word-order", words: ["Kde", "je", "knihovna?"], translation: "איפה הספרייה?" }
+      ]
+},
+    "lesson-16": {
+      title: "שיעור 16: פעלים בזמן הווה בטיולים",
+      questions: [
+        // --- חלק 1: פעלים מוכרים בהווה (חיזוק אוטומטיות) ---
+        { word: "Jdu", options: ["Jdu", "Jedu", "Jím"], translation: "אני הולכת (ברגל)", type: "audio-select" },
+        { word: "Jedu", options: ["Jdu", "Jedu", "Čtu"], translation: "אני נוסעת (ברכב/רכבת)", type: "audio-select" },
+        { word: "Cestuju", options: ["Cestuju", "Pracuju", "Bydlím"], translation: "אני מטיילת / נוסעת", type: "audio-select" },
+        { word: "Bydlím", options: ["Bydlím", "Jím", "Piju"], translation: "אני גרה", type: "audio-select" },
+        { word: "Pracuju", options: ["Pracuju", "Cestuju", "Spím"], translation: "אני עובדת", type: "audio-select" },
+        { word: "Učím se", options: ["Učím se", "Učím", "Čtu"], translation: "אני לומדת (לעצמי)", type: "audio-select" },
+
+        // --- חלק 2: פעלים לטיול ונוף ---
+        { word: "Jdu na procházku", options: ["Jdu na procházku", "Jdu do práce", "Jdu do školy"], translation: "אני הולכת לטיול רגלי", type: "audio-select" },
+        { word: "Jdu do parku", options: ["Jdu do parku", "Jdu do města", "Jdu do nemocnice"], translation: "אני הולכת לפארק", type: "audio-select" },
+        { word: "Jedu do hor", options: ["Jedu do hor", "Jedu do města", "Jedu do školy"], translation: "אני נוסעת להרים", type: "audio-select" },
+        { word: "Jedu k jezeru", options: ["Jedu k jezeru", "Jedu do práce", "Jedu do nemocnice"], translation: "אני נוסעת לאגם", type: "audio-select" },
+        { word: "Fotím", options: ["Fotím", "Spím", "Píšu"], translation: "אני מצלמת", type: "audio-select" },
+        { word: "Plavu", options: ["Plavu", "Piju", "Jím"], translation: "אני שוחה", type: "audio-select" },
+
+        // --- חלק 3: משפטי הווה על טיול (חיבור בין דברים מוכרים) ---
+        { question: "איך אומרים 'אני גרה בפראג ואני מטיילת הרבה'?", word: "Bydlím v Praze a hodně cestuju.", options: ["Bydlím v Praze a hodně cestuju.", "Jsem v Praze a hodně pracuju.", "Bydlím v Praze a málo cestuju."], translation: "אני גרה בפראג ומטיילת הרבה.", type: "translate-select" },
+        { question: "איך אומרים 'היום אני הולכת לפארק'?", word: "Dnes jdu do parku.", options: ["Dnes jdu do parku.", "Včera jdu do parku.", "Dnes jedu do práce."], translation: "היום אני הולכת לפארק.", type: "translate-select" },
+        { question: "איך אומרים 'מחר אני נוסעת להרים'?", word: "Zítra jedu do hor.", options: ["Zítra jedu do hor.", "Dnes jedu do hor.", "Zítra jdu do školy."], translation: "מחר אני נוסעת להרים.", type: "translate-select" },
+        { question: "איך אומרים 'אני אוהבת טבע, אני הולכת ליער'?", word: "Mám ráda přírodu, jdu do lesa.", options: ["Mám ráda přírodu, jdu do lesa.", "Mám ráda město, jdu do práce.", "Mám ráda školu, jdu do školy."], translation: "אני אוהבת טבע, אני הולכת ליער.", type: "translate-select" },
+        { question: "איך אומרים 'אני שוחה באגם'?", word: "Plavu v jezeře.", options: ["Plavu v jezeře.", "Plavu v řece.", "Jdu v jezeře."], translation: "אני שוחה באגם.", type: "translate-select" },
+        { question: "איך אומרים 'אני מצלמת הרים'?", word: "Fotím hory.", options: ["Fotím hory.", "Fotím město.", "Fotím školu."], translation: "אני מצלמת הרים.", type: "translate-select" },
+
+        // --- חלק 4: ערבוב לימודים + טיול (אותם פעלים, סיטואציות שונות) ---
+        { question: "איך אומרים 'אני לומדת צ'כית בפארק'?", word: "Učím se česky v parku.", options: ["Učím se česky v parku.", "Učím se česky v práci.", "Pracuju česky v parku."], translation: "אני לומדת צ'כית בפארק.", type: "translate-select" },
+        { question: "איך אומרים 'אני עובדת בפראג ומטיילת בסוף השבוע'?", word: "Pracuju v Praze a o víkendu cestuju.", options: ["Pracuju v Praze a o víkendu cestuju.", "Pracuju v Praze a o víkendu spím.", "Bydlím v Praze a o víkendu pracuju."], translation: "אני עובדת בפראג ומטיילת בסוף השבוע.", type: "translate-select" },
+        { question: "איך אומרים 'אני הולכת ברגל לאוניברסיטה'?", word: "Jdu pěšky na univerzitu.", options: ["Jdu pěšky na univerzitu.", "Jedu autem na univerzitu.", "Jdu pěšky do Izraele."], translation: "אני הולכת ברגל לאוניברסיטה.", type: "translate-select" },
+        { question: "איך אומרים 'אני נוסעת באוטובוס להרים'?", word: "Jedu autobusem do hor.", options: ["Jedu autobusem do hor.", "Jdu autobusem do hor.", "Jedu vlakem do hor."], translation: "אני נוסעת באוטובוס להרים.", type: "translate-select" },
+
+        // --- חלק 5: סידור משפטים – יומן טיול קטן ---
+        { type: "word-order", words: ["Bydlím", "v", "Praze", "a", "cestuju"], translation: "אני גרה בפראג ומטיילת" },
+        { type: "word-order", words: ["Dnes", "jdu", "na", "procházku"], translation: "היום אני הולכת לטיול רגלי" },
+        { type: "word-order", words: ["Zítra", "jedu", "do", "hor"], translation: "מחר אני נוסעת להרים" },
+        { type: "word-order", words: ["Ráda", "fotím", "přírodu"], translation: "אני אוהבת לצלם טבע" },
+        { type: "word-order", words: ["Učím", "se", "česky", "každý", "den"], translation: "אני לומדת צ'כית כל יום" }
+      ]
     }
-};
+    };

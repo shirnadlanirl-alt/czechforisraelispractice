@@ -6,7 +6,12 @@
   <title>Czech Academy | חזרות</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'Segoe UI', sans-serif; background: #f5f7fa; color: #1a1a2e; min-height: 100vh; }
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f5f7fa;
+      color: #1a1a2e;
+      min-height: 100vh;
+    }
 
     header {
       background: #fff;
@@ -16,16 +21,28 @@
       align-items: center;
       gap: 12px;
     }
-    header a { text-decoration: none; color: #2e7d32; font-size: 20px; }
-    header h1 { font-size: 20px; font-weight: 700; color: #1a1a2e; }
+    header a {
+      text-decoration: none;
+      color: #2e7d32;
+      font-size: 20px;
+    }
+    header h1 {
+      font-size: 20px;
+      font-weight: 700;
+      color: #1a1a2e;
+    }
 
-    .container { max-width: 700px; margin: 0 auto; padding: 32px 20px; }
+    .container {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 32px 20px;
+    }
 
     .summary-cards {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: repeat(2, 1fr);
       gap: 16px;
-      margin-bottom: 32px;
+      margin-bottom: 24px;
     }
     .card {
       background: #fff;
@@ -34,8 +51,16 @@
       text-align: center;
       box-shadow: 0 2px 8px rgba(0,0,0,0.06);
     }
-    .card .num { font-size: 36px; font-weight: 800; color: #2e7d32; }
-    .card .lbl { font-size: 13px; color: #666; margin-top: 4px; }
+    .card .num {
+      font-size: 36px;
+      font-weight: 800;
+      color: #2e7d32;
+    }
+    .card .lbl {
+      font-size: 13px;
+      color: #666;
+      margin-top: 4px;
+    }
 
     .section-title {
       font-size: 17px;
@@ -49,38 +74,48 @@
       padding: 60px 20px;
       color: #888;
     }
-    .empty-state .icon { font-size: 48px; margin-bottom: 12px; }
-    .empty-state p { font-size: 16px; }
+    .empty-state .icon {
+      font-size: 48px;
+      margin-bottom: 12px;
+    }
+    .empty-state p {
+      font-size: 16px;
+    }
 
-    .review-list { display: flex; flex-direction: column; gap: 12px; }
+    .review-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      align-items: stretch;
+    }
 
     .review-item {
       background: #fff;
-      border-radius: 14px;
-      padding: 18px 20px;
+      border-radius: 12px;
+      padding: 14px 16px;
       display: flex;
-      justify-content: space-between;
-      align-items: center;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-      border-right: 4px solid #ef5350;
+      align-items: flex-start;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+      border-right: 3px solid #ef5350;
+      max-width: 620px;
+      margin: 0;
+      gap: 10px;
     }
-    .review-item.medium { border-right-color: #ff9800; }
-    .review-item.low { border-right-color: #fdd835; }
 
-    .item-info .word { font-size: 18px; font-weight: 700; }
-    .item-info .translation { font-size: 14px; color: #666; margin-top: 2px; }
-    .item-info .meta { font-size: 12px; color: #aaa; margin-top: 4px; }
-
-    .item-badge {
-      background: #fce4e4;
-      color: #c62828;
-      font-size: 12px;
+    .item-info .word {
+      font-size: 18px;
       font-weight: 700;
-      padding: 4px 10px;
-      border-radius: 20px;
-      white-space: nowrap;
     }
-    .item-badge.medium { background: #fff3e0; color: #e65100; }
+    .item-info .translation {
+      font-size: 14px;
+      color: #666;
+      margin-top: 2px;
+    }
+    .item-info .meta {
+      font-size: 12px;
+      color: #aaa;
+      margin-top: 4px;
+    }
 
     .start-btn {
       display: block;
@@ -110,6 +145,25 @@
       border-radius: 10px;
       margin-top: 4px;
     }
+
+    .play-btn {
+      background: #ffffff;
+      border: 1px solid #dde6e2;
+      border-radius: 50%;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      cursor: pointer;
+      color: #1F2D29;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+      padding: 0;
+    }
+    .play-btn:hover {
+      background: #f5f7fa;
+    }
   </style>
 </head>
 <body>
@@ -122,11 +176,7 @@
     <div class="summary-cards">
       <div class="card">
         <div class="num" id="reviewCount">0</div>
-        <div class="lbl">לחזרה עכשיו</div>
-      </div>
-      <div class="card">
-        <div class="num" id="weakCount">0</div>
-        <div class="lbl">פריטים חלשים</div>
+        <div class="lbl">פריטים לחזרה עכשיו</div>
       </div>
       <div class="card">
         <div class="num" id="totalSeen">0</div>
@@ -134,7 +184,9 @@
       </div>
     </div>
 
-    <button class="start-btn" id="startBtn" onclick="startReview()">התחילי חזרה עכשיו</button>
+    <button class="start-btn" id="startBtn" onclick="startReview()">
+      התחילו חזרה עכשיו
+    </button>
 
     <div class="section-title">פריטים שדורשים חזרה</div>
     <div class="review-list" id="reviewList"></div>
@@ -142,61 +194,105 @@
 
   <script src="app-state.js"></script>
   <script>
+    // מאחד שאלות לפי מילה זהה (prompt/answer), בלי תלות בשיעור
+    function groupByPrompt(queue) {
+      const byPrompt = {};
+
+      queue.forEach(q => {
+        const raw = q.prompt || q.answer || '';
+        const key = raw.trim().toLowerCase();
+        if (!key) return;
+
+        if (!byPrompt[key]) {
+          byPrompt[key] = {
+            ...q,
+            displayPrompt: raw,
+            correct: 0,
+            wrong: 0,
+            lessons: new Set()
+          };
+        }
+
+        byPrompt[key].correct += q.correct || 0;
+        byPrompt[key].wrong += q.wrong || 0;
+        if (q.lessonId) {
+          byPrompt[key].lessons.add(q.lessonId);
+        }
+      });
+
+      return Object.values(byPrompt).map(item => ({
+        ...item,
+        lessons: Array.from(item.lessons)
+      })).sort((a, b) => b.wrong - a.wrong);
+    }
+
+    function renderList(queue) {
+      const el = document.getElementById('reviewList');
+      const grouped = groupByPrompt(queue);
+
+      if (grouped.length === 0) {
+        el.innerHTML = `
+          <div class="empty-state">
+            <div class="icon">🎉</div>
+            <p>אין פריטים לחזרה כרגע.<br>תמשיכו ללמוד שיעורים חדשים!</p>
+          </div>`;
+        return;
+      }
+
+      el.innerHTML = grouped.slice(0, 20).map(q => {
+        const lessonId = q.lessons && q.lessons.length
+          ? q.lessons[0]
+          : q.lessonId;
+        const lessonNum = lessonId
+          ? lessonId.replace('lesson-', 'שיעור ')
+          : '';
+        const prompt = q.displayPrompt || q.prompt || '';
+
+        return `
+          <div class="review-item">
+            <button class="play-btn" onclick="playReviewAudio('${prompt.replace(/'/g, "\\'")}')">🔊</button>
+            <div class="item-info">
+              <div class="word">${prompt || '—'}</div>
+              <div class="translation">${q.answer || '—'}</div>
+              <div class="meta">
+                <span class="lesson-chip">${lessonNum}</span>
+              </div>
+            </div>
+          </div>`;
+      }).join('');
+    }
+
     function init() {
       const overview = CzechAppState.getOverview();
       const queue = CzechAppState.getReviewQueue();
       const state = CzechAppState.getState();
       const totalSeen = Object.keys(state.questionStats).length;
 
-      document.getElementById('reviewCount').textContent = queue.length;
-      document.getElementById('weakCount').textContent = overview.hardCount;
+      const grouped = groupByPrompt(queue);
+
+      document.getElementById('reviewCount').textContent = grouped.length;
       document.getElementById('totalSeen').textContent = totalSeen;
 
       const btn = document.getElementById('startBtn');
-      if (queue.length === 0) btn.disabled = true;
+      if (grouped.length === 0) btn.disabled = true;
 
       renderList(queue);
-    }
-
-    function renderList(queue) {
-      const el = document.getElementById('reviewList');
-      if (queue.length === 0) {
-        el.innerHTML = `
-          <div class="empty-state">
-            <div class="icon">🎉</div>
-            <p>אין פריטים לחזרה כרגע.<br>תמשיכי ללמוד שיעורים חדשים!</p>
-          </div>`;
-        return;
-      }
-
-      el.innerHTML = queue.slice(0, 20).map(q => {
-        const total = q.correct + q.wrong;
-        const acc = total > 0 ? Math.round((q.correct / total) * 100) : 0;
-        const level = acc < 40 ? '' : acc < 60 ? 'medium' : 'low';
-        const badgeClass = acc < 40 ? '' : 'medium';
-        const lessonNum = q.lessonId ? q.lessonId.replace('lesson-', 'שיעור ') : '';
-
-        return `
-          <div class="review-item ${level}">
-            <div class="item-info">
-              <div class="word">${q.prompt || '—'}</div>
-              <div class="translation">${q.answer || '—'}</div>
-              <div class="meta">
-                <span class="lesson-chip">${lessonNum}</span>
-                <span style="margin-right:8px">${q.wrong} טעויות / ${q.correct} נכון</span>
-              </div>
-            </div>
-            <div class="item-badge ${badgeClass}">${acc}% דיוק</div>
-          </div>`;
-      }).join('');
     }
 
     function startReview() {
       const queue = CzechAppState.getReviewQueue();
       if (queue.length === 0) return;
-      // בינתיים מעביר לשיעור הכי חלש
       const lessonId = queue[0].lessonId;
       window.location.href = `practice.html?lesson=${lessonId}&mode=review`;
+    }
+
+    function playReviewAudio(text) {
+      if (!text) return;
+      window.speechSynthesis.cancel();
+      const msg = new SpeechSynthesisUtterance(text);
+      msg.lang = 'cs-CZ';
+      msg.rate = 0.85;
+      window.speechSynthesis.speak(msg);
     }
 
     init();
